@@ -1,0 +1,172 @@
+Create a clean, professional data pipeline architecture diagram titled
+"Automated ETL Data Pipeline — Apache Airflow on Nomad".
+
+Use generic data/DevOps icons (database cylinder, gear, pipeline arrow,
+cloud, git branch, scheduler clock, dashboard chart, people, shield, lock).
+No specific application or database names — use generic labels only.
+Keep it minimal, well-spaced, portfolio-quality. No clutter. No diagonal
+arrows. All arrows horizontal or vertical.
+
+LAYOUT: 3 vertical phase columns flowing left to right, with a top
+management banner spanning full width above all three columns.
+
+---
+
+TOP BANNER — label: "Pipeline Management & Orchestration" [light gray]
+
+Left section:
+- Data Engineer / Analyst (person icon)
+  Arrow → GitHub DAG Repository (git icon)
+  label: "Push DAG code to main branch"
+
+Center section — label: "Airflow Infrastructure on Nomad"
+  Three boxes side by side:
+  - Box: Nomad Scheduler (label: "Pins Airflow to worker-03 — auto-restart, health checks")
+  - Box: HashiCorp Vault (label: "Injects DB connection strings at container start — JWT auth")
+  - Box: Consul + Traefik (label: "Service registration → dynamic route to Airflow UI")
+
+Right section:
+- Cloudflare (shield icon)
+  label: "airflow.gslaw.school · reporting.gslaw.school — Zero Trust access"
+
+---
+
+COLUMN 1 — label: "Extract | Data Sources" [blue border]
+
+Sub-label: "Operational Databases — Read-Only Access"
+
+Stack of 4 database boxes top to bottom:
+
+  [DB Box 1] label: "Operational Database"
+    sub-label: "Internal network · read-only analytics user"
+
+  [DB Box 2] label: "Operational Database"
+    sub-label: "Internal network · read-only analytics user"
+
+  [DB Box 3] label: "Operational Database"
+    sub-label: "Internal network · read-only analytics user"
+
+  [DB Box 4] label: "Operational Database (Remote)"
+    sub-label: "Cloud environment · via Tailscale WireGuard VPN"
+    (add a small lock/VPN icon on this box)
+
+---
+
+COLUMN 2 — label: "Transform | Airflow Pipeline Engine" [purple border]
+
+Outer box label: "Apache Airflow 2.10 — worker-03, Nomad-managed"
+
+Inside, top section — label: "DAG Sync (Pull-based)"
+  [Box] Cron Job — every 1 minute
+    - git pull → GitHub DAG Repo
+    - rsync → /opt/airflow-dags (host bind mount)
+    sub-label: "Read-only deploy key · DAGs live in 60 seconds after push"
+  Arrow pointing down →
+
+  [Box] Bind Mount
+    label: "/opt/airflow-dags → container /opt/airflow/dags"
+    sub-label: "DAGs appear in scheduler without a redeploy"
+  Arrow pointing down →
+
+Middle section — label: "Airflow Scheduler (LocalExecutor)"
+  Inside, 3 task boxes in sequence left → right:
+
+  [Task Box] "Extract Task"
+    label: "PostgresHook — reads from source DBs via AIRFLOW_CONN_* env vars"
+
+  Arrow →
+
+  [Task Box] "Transform Task"
+    label: "Python in-memory — cleans, joins, aggregates"
+
+  Arrow →
+
+  [Task Box] "Load Task"
+    label: "Writes transformed rows to Data Warehouse"
+
+Below scheduler:
+
+  [Box] Airflow Webserver
+    label: "Pipeline UI — DAG runs, task logs, schedules"
+    sub-label: "port 8093 → Traefik → Cloudflare → airflow.gslaw.school"
+
+  [Box] Airflow Metadata Database
+    label: "PostgreSQL — stores DAG state, task history, run logs"
+    sub-label: "Internal network (db-01)"
+
+---
+
+COLUMN 3 — label: "Load & Consume | Warehouse & Analytics" [orange border]
+
+Top box:
+  [DB Box] "Central Data Warehouse"
+    label: "PostgreSQL — dedicated analytics database"
+    sub-label: "Append-only writes from Airflow · isolated from operational DBs"
+
+Arrow down →
+
+  [App Box] "BI Dashboard"
+    label: "Read-only queries against Data Warehouse"
+    sub-label: "reporting.gslaw.school — Zero Trust protected"
+
+Arrow down →
+
+  [People icon] "Management & Leadership"
+    label: "Self-service dashboards · scheduled reports"
+
+---
+
+CONNECTIONS:
+
+DAG delivery (solid arrows, blue):
+- Data Engineer → GitHub DAG Repo   label: "git push to main"
+- GitHub DAG Repo → Cron Job        label: "git pull every 1 min (deploy key)"
+- Cron Job → Bind Mount             label: "rsync DAGs"
+- Bind Mount → Airflow Scheduler    label: "DAGs auto-discovered"
+
+Extract (solid arrows, green — Column 1 → Column 2):
+- Operational Database 1 → Extract Task   label: "Read-only SQL query"
+- Operational Database 2 → Extract Task   label: "Read-only SQL query"
+- Operational Database 3 → Extract Task   label: "Read-only SQL query"
+- Remote Operational DB → Extract Task    label: "Tailscale VPN · encrypted"
+
+(Group the 3 internal DB arrows into one combined arrow if it reduces clutter)
+
+Load (solid arrow, orange — Column 2 → Column 3):
+- Load Task → Data Warehouse   label: "INSERT / UPSERT"
+
+Consume (solid arrow, orange — Column 3 internal):
+- Data Warehouse → BI Dashboard   label: "Read-only analytical queries"
+- BI Dashboard → Management       label: "Dashboards & reports"
+
+Secrets injection (dashed arrows, purple — from top banner to Column 2):
+- Vault → Airflow Scheduler   label: "DB connection strings at container start"
+- Vault → Airflow Webserver   label: "Fernet key · admin credentials"
+
+Metadata (dashed arrow, gray — Column 2 internal):
+- Airflow Scheduler → Airflow Metadata DB   label: "DAG run state & task history"
+
+Orchestration (dashed arrows, gray — from top banner to Column 2):
+- Nomad → Airflow Scheduler   label: "Lifecycle · health checks · auto-restart"
+- Nomad → Airflow Webserver   label: "Lifecycle · health checks"
+
+Public access (solid arrows, blue — from top banner):
+- Cloudflare → Airflow Webserver   label: "Zero Trust → airflow.gslaw.school"
+- Cloudflare → BI Dashboard        label: "Zero Trust → reporting.gslaw.school"
+
+---
+
+STYLE:
+- White background
+- Column 1 border: blue
+- Column 2 border: purple
+- Column 3 border: orange
+- Top banner: light gray
+- Task boxes inside scheduler: small rounded rectangles in sequence
+- DB boxes: standard cylinder icons with a label below
+- All arrows left-to-right or top-to-bottom only
+- Solid lines: data flow, DAG sync, public access
+- Dashed lines: secrets, orchestration, metadata
+- Arrow labels: 6 words maximum
+- Title at top: "Automated ETL Data Pipeline — Apache Airflow on Nomad"
+- Subtitle: "Extract · Transform · Load · Visualise — Cross-environment, Git-synced DAGs"

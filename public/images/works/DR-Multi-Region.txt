@@ -1,0 +1,128 @@
+Create a clean, professional AWS cloud architecture diagram for an 
+"Automated Multi-Region DR Orchestration Platform". Use AWS service icons. 
+Keep it minimal, well-spaced, and portfolio-quality — no clutter.
+
+LAYOUT: Left-to-right with 3 vertical swimlane regions, and a global top 
+layer above all three.
+
+---
+
+TOP LAYER (global, spans full width) — label: "Global"
+- Users/Internet (people icon)
+- Route 53 (with "Failover Routing Policy" label — PRIMARY → us-east-1, 
+  SECONDARY → us-west-2)
+- Route 53 Health Checks (monitors both ALBs every 30s)
+- GitHub Actions / CodeBuild (CI/CD pipeline)
+
+---
+
+SWIMLANE 1 — label: "Control Plane | us-east-2 (Ohio)" [color: purple]
+Components (top to bottom):
+- API Gateway
+- DR Dashboard (React Web App — serves dashboard.my-projects-aws.site)
+- EventBridge (label: "Health check every 1 min + DR test schedule")
+- Step Functions (label: "Failover Workflow" and "Failback Workflow" — 
+  show as a single state machine box)
+- Three Lambda Functions (side by side):
+    1. Health Checker
+    2. Failover Orchestrator
+    3. Failback Orchestrator
+- DynamoDB (label: "DR State Store")
+- SSM Parameter Store (label: "Active Region Tracker")
+- SNS Topic (label: "DR Alerts → Email")
+- CloudWatch Alarms
+
+---
+
+SWIMLANE 2 — label: "Primary Region | us-east-1 (N. Virginia) — ACTIVE" 
+[color: blue]
+Inside a VPC box:
+  Public Subnets:
+    - Application Load Balancer (label: "app.my-projects-aws.site")
+  Private Subnets:
+    - ECS Fargate Cluster
+        - Frontend Service (2–10 tasks)
+        - Backend Service (2–10 tasks)
+    - RDS PostgreSQL Primary (label: "Multi-AZ")
+Outside VPC:
+  - ECR Repository (label: "Container Images")
+  - S3 Bucket (label: "App Assets + CRR Source")
+  - Secrets Manager
+  - CloudWatch + SNS
+
+---
+
+SWIMLANE 3 — label: "DR Region | us-west-2 (Oregon) — WARM STANDBY" 
+[color: orange]
+Inside a VPC box:
+  Public Subnets:
+    - Application Load Balancer (label: "Standby — not serving traffic")
+  Private Subnets:
+    - ECS Fargate Cluster
+        - Frontend Service (1 task — scaled down)
+        - Backend Service (1 task — scaled down)
+    - RDS PostgreSQL Read Replica (label: "Promoted during failover")
+Outside VPC:
+  - ECR Repository (label: "Replicated Images")
+  - S3 Bucket (label: "CRR Destination")
+  - Secrets Manager
+  - CloudWatch + SNS
+
+---
+
+CONNECTIONS:
+
+Normal traffic (solid arrows, blue):
+- Users → Route 53 → Primary ALB → ECS Fargate (Primary) → RDS Primary
+- ECS Fargate (Primary) → S3 Primary
+- ECS Fargate (Primary) → Secrets Manager (Primary)
+
+Replication flows (dashed arrows, gray, labeled):
+- RDS Primary → RDS Read Replica  
+  (label: "Continuous Replication ~2–8s lag")
+- S3 Primary → S3 DR Bucket  
+  (label: "Cross-Region Replication — 15-min RTC guarantee")
+- ECR Primary → ECR DR  
+  (label: "Image Replication")
+
+Control Plane orchestration (solid arrows, purple):
+- EventBridge → Health Checker Lambda (label: "Every 1 min")
+- Health Checker → Step Functions
+- Step Functions → Failover Orchestrator Lambda
+- Step Functions → Failback Orchestrator Lambda
+- Failover Orchestrator → RDS Read Replica  
+  (label: "Promote to standalone")
+- Failover Orchestrator → DR ECS  
+  (label: "Scale up: 1 → 10 tasks")
+- Failover Orchestrator → Route 53  
+  (label: "DNS cutover to DR ALB")
+- Lambda functions ↔ DynamoDB  
+  (label: "State tracking")
+- Lambda functions ↔ SSM Parameter Store  
+  (label: "Active region flag")
+- Step Functions → SNS  
+  (label: "Alert notifications")
+
+Failover traffic (dashed red arrow):
+- Route 53 → DR ALB → DR ECS Fargate → RDS (promoted)  
+  (label: "Traffic after failover")
+
+CI/CD flow (solid arrow, green):
+- GitHub Actions / CodeBuild → ECR Primary + ECR DR  
+  (label: "Push to both regions on every deploy")
+
+Route 53 health checks (dotted arrows):
+- Route 53 Health Checks → Primary ALB (label: "/health every 30s")
+- Route 53 Health Checks → DR ALB (label: "/health every 30s")
+
+---
+
+STYLE PREFERENCES:
+- Use official AWS service icons throughout
+- Clean white background
+- Distinct border colors per swimlane (purple / blue / orange)
+- Dashed lines for replication, solid for traffic, dotted for health checks
+- Keep labels short and on-arrow
+- No diagonal arrows — all arrows should be horizontal or vertical
+- Title at the top: "Automated Multi-Region DR Orchestration Platform"
+- Subtitle: "RTO: ~5 min | RPO: <30s | Warm Standby Strategy"

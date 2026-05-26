@@ -1,0 +1,435 @@
+{
+  "_id": "a6eb363d-cbbb-42ee-8f71-49896cec6e20",
+  "challenge": "The challenge was to design a mobile-first solution that simplifies long-distance commuting for students, create a safer and more controlled travel experience, and build trust by connecting students directly with vetted transport vendors affiliated with their university.",
+  "challengeGif": "https://res.cloudinary.com/drsjfyody/video/upload/v1764005162/Advenr-iPhone-mockup_1_vtjlxg.mp4",
+  "description": "Student focused ride sharing app that makes long-distance campus travel safer, simpler, and more reliable.",
+  "impactResults": [
+    {
+      "_key": "c6528ac427cb",
+      "_type": "impactResult",
+      "description": "By digitizing the booking process, students no longer rely on word-of-mouth, informal agents, or physically queuing for tickets.\n\n",
+      "title": "Reduced Booking Friction"
+    },
+    {
+      "_key": "fd1b07f0070f",
+      "_type": "impactResult",
+      "description": "Students fell safer traveling with vetted vendors affiliated to the institution, also universities and vendors gain structured travel date, reducing disputes and supporting compliance.\n\n",
+      "title": "Increased Transparency & Safety"
+    }
+  ],
+  "introduction": "For many university students in Ghana, traveling between campus and their hometowns is a stressful and unsafe experience. Students often rely on fragmented transportation options — moving from buses to trotros, taxis, and other commercial vehicles before finally reaching their destination. This disjointed journey not only increases travel costs and time but also raises serious safety and security concerns. Advenr, was designed to solve this problem by simplifying the process of a student going from point A to B in a simple and controlled space by introducing a mobile first ride sharing app that connects the students and transportation vendors associated with the university to commute to their destination safely.\n\n",
+  "keyRoles": [
+    "Product & User Research",
+    "User Interface Design",
+    "User Experience Design",
+    "User Interaction Design"
+  ],
+  "objectives": [
+    {
+      "_key": "9b8bedb8d1c3",
+      "_type": "objective",
+      "description": "Ensure students travel with vetted transport vendors, reducing security risks and building trust in the system.",
+      "title": "Safe & Reliable Commute"
+    },
+    {
+      "_key": "e8fe8397a419",
+      "_type": "objective",
+      "description": "Eliminate fragmented journeys by offering a single, seamless ride-sharing solution from campus to home.",
+      "title": "Simplified Travel Experience"
+    },
+    {
+      "_key": "facee4e19e25",
+      "_type": "objective",
+      "description": "Provide cost-effective transportation options that fit within student budgets without compromising safety.",
+      "title": "Student-Centric Affordability"
+    },
+    {
+      "_key": "a356023e1b93",
+      "_type": "objective",
+      "description": "Strengthen collaboration between universities and trusted transport providers to create a controlled ecosystem for student mobility.",
+      "title": "University—Vendor Integration"
+    }
+  ],
+  "painPoints": [
+    {
+      "_key": "c0d864bf5d5c",
+      "_type": "painPoint",
+      "description": "Students have no central way to book trips. They rely on agents or terminals, face long queues, and deal with changing schedules, which creates stress and uncertainty.",
+      "title": "Planning & Booking"
+    },
+    {
+      "_key": "2a63b8791d5c",
+      "_type": "painPoint",
+      "description": "When official buses are full, students turn to unverified vehicles. Poor emergency support and weak oversight of overcrowding or vehicle conditions make travel unsafe.",
+      "title": "Safety & Security"
+    },
+    {
+      "_key": "dc87d8a9c840",
+      "_type": "painPoint",
+      "description": "Transport prices often change without notice. With no student discounts and longer, fragmented trips for those from distant regions, affordability is a big challenge.",
+      "title": "Cost & Accessibility"
+    },
+    {
+      "_key": "f196d8349441",
+      "_type": "painPoint",
+      "description": "Travel is tiring and unreliable, with long waits, multiple vehicle changes, and uncomfortable rides that lower the overall experience.",
+      "title": "Travel Experience"
+    },
+    {
+      "_key": "74956a28cc04",
+      "_type": "painPoint",
+      "description": "The university lacks a structured system to manage or monitor student travel. Vendors operate independently, and students cannot easily give feedback or report issues.\n\n",
+      "title": "University & Vendor Coordination"
+    }
+  ],
+  "projectDetails": {
+    "client": "Advenr",
+    "duration": "1 months - (Year: 2024)",
+    "projectField": "Transportation (Ride-sharing)",
+    "role": "Solo Product Designer"
+  },
+  "projectShots": [
+    {
+      "images": [
+        {
+          "asset": {
+            "_id": "image-5de99050c16f9d3df717491019efc37a8cee2445-427x926-png",
+            "url": "https://cdn.sanity.io/images/1dst5361/production/5de99050c16f9d3df717491019efc37a8cee2445-427x926.png"
+          }
+        },
+        {
+          "asset": {
+            "_id": "image-2f985e2efc646e32dddd801e7f27ff4acaa6ee23-429x926-png",
+            "url": "https://cdn.sanity.io/images/1dst5361/production/2f985e2efc646e32dddd801e7f27ff4acaa6ee23-429x926.png"
+          }
+        },
+        {
+          "asset": {
+            "_id": "image-79daf39028496869fc76eb0ca78eecd21bcd06c1-429x926-png",
+            "url": "https://cdn.sanity.io/images/1dst5361/production/79daf39028496869fc76eb0ca78eecd21bcd06c1-429x926.png"
+          }
+        },
+        {
+          "asset": {
+            "_id": "image-9ae4b5574254ad123002064e252a3e3f4c5fe7eb-427x926-png",
+            "url": "https://cdn.sanity.io/images/1dst5361/production/9ae4b5574254ad123002064e252a3e3f4c5fe7eb-427x926.png"
+          }
+        },
+        {
+          "asset": {
+            "_id": "image-2ad9168c3b1f0bd1971469c2b5d472f5f5115ea9-425x926-png",
+            "url": "https://cdn.sanity.io/images/1dst5361/production/2ad9168c3b1f0bd1971469c2b5d472f5f5115ea9-425x926.png"
+          }
+        },
+        {
+          "asset": {
+            "_id": "image-77a0983d7330b1622e0e4eb3c9aa2c54878e1978-431x926-png",
+            "url": "https://cdn.sanity.io/images/1dst5361/production/77a0983d7330b1622e0e4eb3c9aa2c54878e1978-431x926.png"
+          }
+        }
+      ],
+      "title": "Onboarding"
+    }
+  ],
+  "researchProcess": [
+    {
+      "_key": "62df15c15b56",
+      "_type": "block",
+      "children": [
+        {
+          "_key": "f984c4931ede",
+          "_type": "span",
+          "marks": [],
+          "text": "Our research began with a deep exploration of KNUST undergraduates' travel challenges. We aimed to understand how students plan and undertake long-distance intercity trips to/from campus and what hinders them. To ensure a broad perspective, we involved all stakeholders — the students themselves (the primary users), as well as bus company representatives, drivers, campus transport coordinators, and administrators. These conversations revealed initial themes like how trips are booked and common frustrations, which guided the rest of the study."
+        }
+      ],
+      "markDefs": [],
+      "style": "normal"
+    },
+    {
+      "_key": "c1597b04c7e8",
+      "_type": "block",
+      "children": [
+        {
+          "_key": "594d648160da",
+          "_type": "span",
+          "marks": [],
+          "text": "Key research steps and findings included:"
+        }
+      ],
+      "markDefs": [],
+      "style": "h3"
+    },
+    {
+      "_key": "421ccedfec5c",
+      "_type": "block",
+      "children": [
+        {
+          "_key": "e0f95eefa018",
+          "_type": "span",
+          "marks": [],
+          "text": ""
+        }
+      ],
+      "markDefs": [],
+      "style": "normal"
+    },
+    {
+      "_key": "7ac06ee0f1a6",
+      "_type": "block",
+      "children": [
+        {
+          "_key": "d758586bcd45",
+          "_type": "span",
+          "marks": [
+            "strong"
+          ],
+          "text": "1. Stakeholder interviews: "
+        },
+        {
+          "_key": "761d685d2bce",
+          "_type": "span",
+          "marks": [],
+          "text": "We held in-depth interviews with KNUST undergraduates and related parties (bus operators, campus officials, etc.) to capture first-hand accounts of the travel experience. This one-on-one approach allowed us to \"dive deep into individual user experiences, understand their pain points, and gather rich, qualitative data\". These sessions clarified current practices (such as students relying on phone calls or agents for tickets) and highlighted differing needs among groups."
+        }
+      ],
+      "markDefs": [],
+      "style": "normal"
+    },
+    {
+      "_key": "ef3da06f3bf2",
+      "_type": "block",
+      "children": [
+        {
+          "_key": "d1175b5c38fd",
+          "_type": "span",
+          "marks": [],
+          "text": ""
+        }
+      ],
+      "markDefs": [],
+      "style": "normal"
+    },
+    {
+      "_key": "783834b42493",
+      "_type": "block",
+      "children": [
+        {
+          "_key": "84e7030dbc9f",
+          "_type": "span",
+          "marks": [
+            "strong"
+          ],
+          "text": "2. Student surveys: "
+        },
+        {
+          "_key": "29c62f0aabae",
+          "_type": "span",
+          "marks": [],
+          "text": "We then deployed surveys to a large cross-section of undergrads to quantify travel behaviors and preferences. Our survey asked about trip frequency, destinations, booking methods, and satisfaction. we discovered trends such as many students travel during holidays and most trips are on Fridays and Sundays)."
+        }
+      ],
+      "markDefs": [],
+      "style": "normal"
+    },
+    {
+      "_key": "43d34008c7d4",
+      "_type": "block",
+      "children": [
+        {
+          "_key": "d1744ccaa263",
+          "_type": "span",
+          "marks": [],
+          "text": ""
+        }
+      ],
+      "markDefs": [],
+      "style": "normal"
+    },
+    {
+      "_key": "ce26095c6367",
+      "_type": "block",
+      "children": [
+        {
+          "_key": "d67bbd556a47",
+          "_type": "span",
+          "marks": [
+            "strong"
+          ],
+          "text": "3. Workflow (Journey) mapping:"
+        },
+        {
+          "_key": "ce429c6e6954",
+          "_type": "span",
+          "marks": [],
+          "text": " Using the interview and survey data, we created a journey map for a typical intercity trip. A journey map is a visual timeline of the steps a user takes to achieve a goal. In our case, we mapped phases such as Planning (searching for schedules), Booking (purchasing tickets), Waiting/Boarding, Riding, and Arrival."
+        }
+      ],
+      "markDefs": [],
+      "style": "normal"
+    }
+  ],
+  "slug": "advenr",
+  "solutionDesign": {
+    "description": "These design solutions worked together to create a controlled, digital-first transport ecosystem for KNUST students. Advenr not only simplified the journey from point A to B but also introduced accountability, transparency, and security — addressing both student needs and institutional concerns.",
+    "solutions": [
+      {
+        "imagesBlock": [
+          {
+            "asset": {
+              "_id": "image-2afef849ea4f08edb661d2dc131730faaeb56e8a-334x722-png",
+              "url": "https://cdn.sanity.io/images/1dst5361/production/2afef849ea4f08edb661d2dc131730faaeb56e8a-334x722.png"
+            }
+          },
+          {
+            "asset": {
+              "_id": "image-1612c6ba3d2b91e22ceeaaae7013c1cf0fe95faa-332x722-png",
+              "url": "https://cdn.sanity.io/images/1dst5361/production/1612c6ba3d2b91e22ceeaaae7013c1cf0fe95faa-332x722.png"
+            }
+          },
+          {
+            "asset": {
+              "_id": "image-d48d03beb38f97bca32c45303f21bc7dda22635a-167x361-png",
+              "url": "https://cdn.sanity.io/images/1dst5361/production/d48d03beb38f97bca32c45303f21bc7dda22635a-167x361.png"
+            }
+          },
+          {
+            "asset": {
+              "_id": "image-d48d03beb38f97bca32c45303f21bc7dda22635a-167x361-png",
+              "url": "https://cdn.sanity.io/images/1dst5361/production/d48d03beb38f97bca32c45303f21bc7dda22635a-167x361.png"
+            }
+          }
+        ],
+        "problemBlock": {
+          "description": "Lack of a centralized hub for transport information.",
+          "title": "Problem Solved"
+        },
+        "solutionBlock": {
+          "description": "The homepage offers students a space to view trips, vendors, and notifications, addressing the fragmented booking system. It keeps users engaged, reinforcing Advenr as the main transport platform.",
+          "title": "Centralized hub for transport"
+        }
+      },
+      {
+        "imagesBlock": [
+          {
+            "asset": {
+              "_id": "image-2afef849ea4f08edb661d2dc131730faaeb56e8a-334x722-png",
+              "url": "https://cdn.sanity.io/images/1dst5361/production/2afef849ea4f08edb661d2dc131730faaeb56e8a-334x722.png"
+            }
+          },
+          {
+            "asset": {
+              "_id": "image-1612c6ba3d2b91e22ceeaaae7013c1cf0fe95faa-332x722-png",
+              "url": "https://cdn.sanity.io/images/1dst5361/production/1612c6ba3d2b91e22ceeaaae7013c1cf0fe95faa-332x722.png"
+            }
+          },
+          {
+            "asset": {
+              "_id": "image-d48d03beb38f97bca32c45303f21bc7dda22635a-167x361-png",
+              "url": "https://cdn.sanity.io/images/1dst5361/production/d48d03beb38f97bca32c45303f21bc7dda22635a-167x361.png"
+            }
+          },
+          {
+            "asset": {
+              "_id": "image-1612c6ba3d2b91e22ceeaaae7013c1cf0fe95faa-332x722-png",
+              "url": "https://cdn.sanity.io/images/1dst5361/production/1612c6ba3d2b91e22ceeaaae7013c1cf0fe95faa-332x722.png"
+            }
+          }
+        ],
+        "problemBlock": {
+          "description": "Uncertainty around booking and schedules.\n\n",
+          "title": "Problem Solved"
+        },
+        "solutionBlock": {
+          "description": "Students can browse trips, view availability, and book directly in-app. This eliminates long queues and unreliable information, helping vendors plan capacity and reduce no-shows.\n\n",
+          "title": "A stress free way to secure transport"
+        }
+      },
+      {
+        "imagesBlock": [
+          {
+            "asset": {
+              "_id": "image-2afef849ea4f08edb661d2dc131730faaeb56e8a-334x722-png",
+              "url": "https://cdn.sanity.io/images/1dst5361/production/2afef849ea4f08edb661d2dc131730faaeb56e8a-334x722.png"
+            }
+          },
+          {
+            "asset": {
+              "_id": "image-d48d03beb38f97bca32c45303f21bc7dda22635a-167x361-png",
+              "url": "https://cdn.sanity.io/images/1dst5361/production/d48d03beb38f97bca32c45303f21bc7dda22635a-167x361.png"
+            }
+          },
+          {
+            "asset": {
+              "_id": "image-d48d03beb38f97bca32c45303f21bc7dda22635a-167x361-png",
+              "url": "https://cdn.sanity.io/images/1dst5361/production/d48d03beb38f97bca32c45303f21bc7dda22635a-167x361.png"
+            }
+          },
+          {
+            "asset": {
+              "_id": "image-1612c6ba3d2b91e22ceeaaae7013c1cf0fe95faa-332x722-png",
+              "url": "https://cdn.sanity.io/images/1dst5361/production/1612c6ba3d2b91e22ceeaaae7013c1cf0fe95faa-332x722.png"
+            }
+          }
+        ],
+        "problemBlock": {
+          "description": "No record of past travel.\n\n",
+          "title": "Problem Solved"
+        },
+        "solutionBlock": {
+          "description": "The history flow keeps track of completed bookings. This helps with accountability in case of disputes or safety issues by providing travel data for students and the university to monitor usage patterns.\n\n",
+          "title": "Proof of travel and transparency for past trips."
+        }
+      },
+      {
+        "imagesBlock": [
+          {
+            "asset": {
+              "_id": "image-2afef849ea4f08edb661d2dc131730faaeb56e8a-334x722-png",
+              "url": "https://cdn.sanity.io/images/1dst5361/production/2afef849ea4f08edb661d2dc131730faaeb56e8a-334x722.png"
+            }
+          },
+          {
+            "asset": {
+              "_id": "image-1612c6ba3d2b91e22ceeaaae7013c1cf0fe95faa-332x722-png",
+              "url": "https://cdn.sanity.io/images/1dst5361/production/1612c6ba3d2b91e22ceeaaae7013c1cf0fe95faa-332x722.png"
+            }
+          },
+          {
+            "asset": {
+              "_id": "image-d48d03beb38f97bca32c45303f21bc7dda22635a-167x361-png",
+              "url": "https://cdn.sanity.io/images/1dst5361/production/d48d03beb38f97bca32c45303f21bc7dda22635a-167x361.png"
+            }
+          },
+          {
+            "asset": {
+              "_id": "image-2afef849ea4f08edb661d2dc131730faaeb56e8a-334x722-png",
+              "url": "https://cdn.sanity.io/images/1dst5361/production/2afef849ea4f08edb661d2dc131730faaeb56e8a-334x722.png"
+            }
+          }
+        ],
+        "problemBlock": {
+          "description": "Lack of verified and transparent vendor options.\n\n",
+          "title": "Problem Solved"
+        },
+        "solutionBlock": {
+          "description": "Students can see vendor profiles, services, and reviews, ensuring they travel with trusted providers. This increases safety and reliability.\n\n",
+          "title": "Confidence in traveling with vetted vendors."
+        }
+      }
+    ]
+  },
+  "summary": "This project explains the development of Advenr, a ride sharing mobile platform built to help university campus students in Ghana streamline regional transportation, for students when they vacate from campus.",
+  "thumbnail": {
+    "asset": {
+      "_id": "image-ea8d810b9a6308a592f631938ffde5c786a6a17b-2942x1699-png",
+      "url": "https://cdn.sanity.io/images/1dst5361/production/ea8d810b9a6308a592f631938ffde5c786a6a17b-2942x1699.png"
+    }
+  },
+  "title": "Advenr",
+  "workDone": [
+    "Conduct research",
+    "Designed a mobile app"
+  ],
+  "workGif": "https://res.cloudinary.com/drsjfyody/video/upload/v1764005162/Advenr-iPhone-mockup_1_vtjlxg.mp4"
+}

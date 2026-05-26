@@ -1,0 +1,158 @@
+Create a clean, professional infrastructure architecture diagram titled
+"Hybrid Cloud Infrastructure — Production Nomad Cluster".
+
+Use generic DevOps icons (server rack, VM/box, container chip, shield,
+database cylinder, cloud, gear, people). NO specific application names —
+label all workloads simply as "App" or "Cron Job". Keep it minimal,
+well-spaced, and portfolio-quality. No clutter. No diagonal arrows.
+
+LAYOUT: Left-to-right with 2 main swimlanes side by side, and a global
+top banner spanning the full width above both swimlanes.
+
+---
+
+TOP BANNER — label: "Global Layer" [full width, light gray background]
+
+Row 1 (left to right):
+- Users / Internet (people icon)
+- Arrow → Cloudflare (shield icon)
+  Sub-labels: "DNS · DDoS Protection · CDN · Zero Trust Identity Gateway"
+  Note: "All *.gslaw.school domains — no public IP exposed"
+
+Row 2 (left to right):
+- GitHub Repositories (git icon) → GitHub Actions CI/CD (gear icon)
+  → GitHub Container Registry / GHCR (container icon)
+- Backblaze B2 (cloud icon, label: "Off-site Backup Storage")
+- Tailscale (lock icon, label: "WireGuard Mesh VPN — cross-environment encrypted tunnel")
+
+---
+
+SWIMLANE 1 — label: "On-Premises | Mac Studio — Ghana"
+             sub-label: "Role: Dev Environment + Warm Standby"
+             [color: blue border]
+
+Outer box label: "OrbStack (Type-2 Hypervisor) — macOS Host — 7 Ubuntu ARM64 VMs"
+
+Inside, arrange 7 VM boxes top-to-bottom:
+
+  [VM Box] "router-01"
+    - cloudflared  (label: "Cloudflare Tunnel agent — persistent outbound connection")
+    - Traefik      (label: "Reverse proxy — routes dynamically from Consul service registry")
+
+  [VM Box] "server-01 — Control Plane"
+    - Nomad Server  (label: "Job scheduling & orchestration")
+    - Consul Server (label: "Service discovery & health checks")
+    - Vault         (label: "Secrets engine — KV v2, JWT workload auth")
+
+  [VM Box] "worker-01 — Nomad Client"
+    - [App chip] [App chip] [App chip] [App chip]
+
+  [VM Box] "worker-02 — Nomad Client"
+    - [App chip] [App chip]
+
+  [VM Box] "worker-03 — Nomad Client (Data Workloads)"
+    - [App chip — label: "Data Pipeline"] [App chip — label: "BI Dashboard"]
+    - [Cron Job chip — label: "DB Backup Job"]
+
+  [VM Box] "db-01 — Database Server"
+    - PostgreSQL (label: "One isolated database per application")
+
+  [VM Box] "utility-01 — Platform Services"
+    - Prometheus (label: "Metrics collection")
+    - Grafana     (label: "Infrastructure dashboards")
+    - GitHub Self-hosted Runner (label: "ARM64 CI/CD builds & deploys")
+
+---
+
+SWIMLANE 2 — label: "Cloud | Dedicated Bare Metal — Remote"
+              sub-label: "Role: Active Production Environment"
+              [color: orange border]
+
+Outer box label: "Proxmox VE (Type-1 Hypervisor) — Dedicated Bare Metal Server — 7 Ubuntu VMs"
+
+Inside, arrange 7 VM boxes in the same order as Swimlane 1:
+
+  [VM Box] "router-vm"
+    - cloudflared  (label: "Cloudflare Tunnel agent")
+    - Traefik      (label: "Reverse proxy — Consul-backed dynamic routing")
+
+  [VM Box] "server-vm — Control Plane"
+    - Nomad Server
+    - Consul Server
+    - Vault
+
+  [VM Box] "worker-vm-01 — Nomad Client"
+    - [App chip] [App chip] [App chip] [App chip]
+
+  [VM Box] "worker-vm-02 — Nomad Client"
+    - [App chip] [App chip]
+
+  [VM Box] "worker-vm-03 — Nomad Client (Data Workloads)"
+    - [App chip — label: "Data Pipeline"] [App chip — label: "BI Dashboard"]
+    - [Cron Job chip — label: "DB Backup Job"]
+
+  [VM Box] "db-vm — Database Server"
+    - PostgreSQL (label: "One isolated database per application")
+
+  [VM Box] "utility-vm — Platform Services"
+    - Prometheus
+    - Grafana
+    - GitHub Self-hosted Runner (label: "x86_64 CI/CD builds & deploys")
+
+---
+
+CONNECTIONS:
+
+Public traffic (solid arrows, blue):
+- Users → Cloudflare
+- Cloudflare → cloudflared on router-01 (Swimlane 1)
+  label: "Zero Trust tunnel — outbound only, no open ports"
+- Cloudflare → cloudflared on router-vm (Swimlane 2)
+  label: "Zero Trust tunnel — outbound only, no open ports"
+- Traefik → worker VMs (inside each swimlane)
+  label: "Host-based routing from Consul registry"
+
+Service mesh (dashed arrows, gray, inside each swimlane):
+- Nomad Server → worker VMs  label: "Job scheduling"
+- Consul Server → Traefik    label: "Dynamic service registry"
+- worker VMs → Consul Server label: "Service registration"
+
+Secrets (dashed arrows, green, inside each swimlane):
+- Vault → worker VMs  label: "JWT auth — secrets injected at container start"
+
+App → Database (solid arrows, orange, inside each swimlane):
+- worker VMs → PostgreSQL db  label: "Internal network only"
+
+CI/CD (solid arrows, purple):
+- GitHub Actions → GHCR        label: "Build & push image on tag"
+- GHCR → worker VMs (both swimlanes) label: "Image pull on deploy"
+- GitHub Actions → Nomad Server (both swimlanes) label: "nomad job run"
+
+Cross-environment (dashed arrow, teal):
+- Swimlane 1 ↔ Swimlane 2  label: "Tailscale WireGuard VPN"
+  (one clean horizontal arrow between the two swimlanes)
+
+Backup (dashed arrow, red):
+- Cron Job chip (worker-03 both swimlanes) → Backblaze B2 (top banner)
+  label: "Encrypted DB dumps — automated"
+
+Replication / standby (dashed arrow, gray):
+- Swimlane 2 (Production) → Swimlane 1 (Standby)
+  label: "Warm standby — traffic fails over if production unreachable"
+
+---
+
+STYLE:
+- White background
+- Swimlane 1 border: blue
+- Swimlane 2 border: orange
+- Top banner: light gray
+- App workload chips: small rounded rectangles, label "App" or "Cron Job"
+- VM boxes: medium rectangles with the VM name as a header label
+- Hypervisor outer box: large dashed rectangle with the hypervisor name
+- Solid arrows: live traffic, CI/CD, app→DB
+- Dashed arrows: secrets, service mesh, backups, replication
+- All arrows horizontal or vertical only — no diagonals
+- Labels on arrows kept to 5 words maximum
+- Title: "Hybrid Cloud Infrastructure — Production Nomad Cluster"
+- Subtitle: "HashiCorp Nomad · Consul · Vault · Traefik · Cloudflare Zero Trust"

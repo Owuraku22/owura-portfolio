@@ -1,0 +1,153 @@
+Create a clean, professional AWS cloud architecture diagram for an 
+"Enterprise-Grade Cloud Governance Platform". Use AWS service icons. 
+Keep it minimal, well-spaced, and portfolio-quality — no clutter.
+
+TITLE: Enterprise-Grade Cloud Governance & Auto-Remediation Platform
+SUBTITLE: Multi-Account | AWS Organizations | Event-Driven | IaC-Driven
+
+---
+
+LAYOUT: One large outer box labeled "AWS Organization". Inside it, 
+two main vertical zones side by side:
+  - LEFT ZONE: Member Accounts (3 stacked boxes)
+  - RIGHT ZONE: Governance Account (the control plane)
+
+Below the outer org box, place an "External Notifications" row.
+
+---
+
+LEFT ZONE — label: "Member Accounts" [color: purple/violet]
+
+Three stacked account boxes (each identical in structure):
+
+  Box 1 — label: "Dev Account"
+  Box 2 — label: "Staging Account"  
+  Box 3 — label: "Prod Account"
+
+  Each box contains (left to right):
+    - AWS Config Recorder (label: "Records all resource types")
+    - Config Rules (label: "7 managed rules")
+      (show as a single icon with a tooltip list:
+       required-tags, s3-public-read-prohibited,
+       s3-public-write-prohibited, s3-block-public-access,
+       restricted-ssh, restricted-rdp, ec2-stopped-instance)
+    - Config Delivery Channel (arrow pointing right → to Governance)
+    - IAM Role (label: "CloudGovernanceRemediationRole
+       — trusted by Governance only")
+
+Also include at the very top of the left zone (above the 3 account boxes):
+  - AWS IAM Identity Center / SSO (label: "Centralized access — all accounts")
+  - Management Account (small box, label: "Billing + Org Root")
+
+---
+
+RIGHT ZONE — label: "Governance Account (Delegated Admin)" [color: blue]
+
+Top section — Dashboard layer:
+  - Route 53 (label: "governance.my-projects-aws.site")
+  - ACM Certificate
+  - API Gateway (label: "REST API — compliance/ and exceptions/ endpoints")
+  - Dashboard API Lambda (label: "Compliance summary, per-account, per-rule,
+    exception CRUD")
+
+Middle section — Event pipeline:
+  - EventBridge (label: "2 rules:
+    1. Config compliance changes (real-time)
+    2. Daily drift detection schedule (7PM UTC)")
+  - SQS Dead Letter Queue (label: "Failed events")
+  - Config Aggregator (label: "Org-wide aggregation — all accounts, all regions")
+
+Processing section — Lambda engines (show as 4 boxes side by side):
+  - Policy Engine Lambda (label: "Classifies: LOW / MEDIUM / HIGH severity")
+  - Remediation Engine Lambda (label: "Assumes cross-account role → applies safe fixes
+    (S3 public ACL, SSH rules, tags)
+    BLOCKED in Prod → notifies instead")
+  - Notification Lambda (label: "SNS + Slack webhooks")
+  - Drift Detection Lambda (label: "Reads Terraform state from S3,
+    compares with AWS Config — daily")
+
+Storage section:
+  - DynamoDB (label: "2 tables:
+    1. Compliance History (TTL + PITR + KMS)
+    2. Compliance Exceptions (approval workflow:
+       pending → approved / rejected)")
+  - S3 Bucket (label: "Audit logs + Terraform state backend")
+  - KMS Key (label: "Encrypts DynamoDB + S3")
+  - CloudWatch (label: "Logs + Dashboards")
+
+---
+
+BOTTOM ROW — label: "External Notifications" [color: orange]
+  - SNS Topic → Email Subscribers
+  - Slack Channel (label: "Color-coded severity alerts")
+
+---
+
+CONNECTIONS:
+
+Config data flow (solid arrows, purple → blue):
+- Each member account's Config Recorder → Config Aggregator  
+  (label: "Compliance data — org-wide aggregation")
+- Each member account's Config Delivery Channel → S3 Bucket  
+  (label: "Config snapshots + history")
+- Each member account's Config Rules → EventBridge  
+  (label: "ComplianceChangeNotification events")
+
+EventBridge routing (solid arrows, blue):
+- EventBridge → Policy Engine Lambda  
+  (label: "Compliance change event — with retry + DLQ")
+- EventBridge → Drift Detection Lambda  
+  (label: "Daily 7PM UTC schedule")
+- EventBridge → SQS DLQ  
+  (label: "On failure after 3 retries")
+
+Policy Engine routing (solid arrows, blue):
+- Policy Engine Lambda → DynamoDB  
+  (label: "Store — idempotent")
+- Policy Engine Lambda → Remediation Engine Lambda  
+  (label: "LOW severity only")
+- Policy Engine Lambda → Notification Lambda  
+  (label: "MEDIUM severity")
+- Policy Engine Lambda → CloudWatch  
+  (label: "HIGH severity — log only")
+
+Remediation flow (solid arrows, blue):
+- Remediation Engine Lambda → Dev IAM Role  
+  (label: "sts:AssumeRole → fix S3, tags, SGs")
+- Remediation Engine Lambda → Staging IAM Role  
+  (label: "sts:AssumeRole → fix S3, tags, SGs")
+- Remediation Engine Lambda → Prod IAM Role  
+  (dashed red arrow, label: "BLOCKED — notify instead")
+- Remediation Engine Lambda → Notification Lambda  
+  (label: "Prod violations → notify only")
+
+Drift detection flow (solid arrows, blue):
+- Drift Detection Lambda → S3 Bucket  
+  (label: "Read Terraform state")
+- Drift Detection Lambda → Config Aggregator  
+  (label: "Query current resource state")
+- Drift Detection Lambda → Notification Lambda  
+  (label: "Alert on drift found")
+
+Notification flow (solid arrows, orange):
+- Notification Lambda → SNS Topic → Email Subscribers
+- Notification Lambda → Slack Channel
+
+Dashboard flow (solid arrows, blue):
+- Route 53 → API Gateway → Dashboard API Lambda → DynamoDB  
+  (label: "Read compliance data + manage exceptions")
+
+---
+
+STYLE PREFERENCES:
+- Use official AWS service icons throughout
+- White background, clean borders
+- Left zone (member accounts): light purple fill
+- Governance account: light blue fill
+- External row: light orange fill
+- Dashed red arrow for prod remediation block
+- All other arrows solid
+- Keep arrow labels short and inline
+- No diagonal arrows — horizontal and vertical only
+- Title at top: "Enterprise-Grade Cloud Governance & Auto-Remediation Platform"
+- Subtitle: "5 AWS Accounts | 7 Compliance Rules | Real-time + Daily Detection"
