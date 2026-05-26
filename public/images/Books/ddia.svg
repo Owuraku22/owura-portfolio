@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#111827"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="800" rx="48" fill="url(#bg)"/>
+  <rect x="64" y="64" width="672" height="672" rx="36" fill="#ffffff" opacity="0.06"/>
+  <text x="96" y="200" fill="#ffffff" font-size="52" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto" font-weight="700">Designing</text>
+  <text x="96" y="270" fill="#ffffff" font-size="52" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto" font-weight="700">Data-Intensive</text>
+  <text x="96" y="340" fill="#ffffff" font-size="52" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto" font-weight="700">Applications</text>
+  <text x="96" y="420" fill="#9CA3AF" font-size="28" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto" font-weight="600">Martin Kleppmann</text>
+  <text x="96" y="680" fill="#FF8800" font-size="22" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto" font-weight="700" letter-spacing="2">BACKEND • SYSTEMS</text>
+</svg>

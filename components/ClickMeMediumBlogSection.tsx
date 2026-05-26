@@ -14,39 +14,39 @@ interface MediumPost {
 
 const FALLBACK_POSTS: MediumPost[] = [
     {
-        title: "Certificates vs Projects: What Actually Makes a Cloud Engineer",
-        link: "https://medium.com/@evansosei0707",
+        title: "Designing REST APIs That Scale with Laravel",
+        link: "https://medium.com/@owurakwaku758",
         thumbnail: "",
         pubDate: "",
-        categories: ["Cloud", "AWS"],
+        categories: ["Laravel", "API"],
     },
     {
-        title: "AWS re:Invent 2025 Recap: The 5 Announcements That Actually Matter",
-        link: "https://medium.com/@evansosei0707",
+        title: "Optimizing MySQL Queries for 40% Faster Response Times",
+        link: "https://medium.com/@owurakwaku758",
         thumbnail: "",
         pubDate: "",
-        categories: ["AWS", "re:Invent"],
+        categories: ["MySQL", "Performance"],
     },
     {
-        title: "From Clicks to Code: Mastering Serverless with CloudFormation",
-        link: "https://medium.com/@evansosei0707",
+        title: "Building Role-Based Access Control in Frappe",
+        link: "https://medium.com/@owurakwaku758",
         thumbnail: "",
         pubDate: "",
-        categories: ["CloudFormation", "Serverless"],
+        categories: ["Frappe", "Security"],
     },
     {
-        title: "Building a Serverless Image Processor on AWS",
-        link: "https://medium.com/@evansosei0707",
+        title: "From Requirements to Release: Shipping a Records Management System",
+        link: "https://medium.com/@owurakwaku758",
         thumbnail: "",
         pubDate: "",
-        categories: ["Lambda", "S3"],
+        categories: ["Backend", "Systems"],
     },
     {
-        title: "Making It Production-Ready: My AWS DevOps Journey",
-        link: "https://medium.com/@evansosei0707",
+        title: "JWT Authentication Done Right for Mobile & Web",
+        link: "https://medium.com/@owurakwaku758",
         thumbnail: "",
         pubDate: "",
-        categories: ["DevOps", "CloudFront"],
+        categories: ["JWT", "Security"],
     },
 ];
 
@@ -303,6 +303,5 @@ const ClickMeMediumBlogSection = () => {
 };
 
 export default ClickMeMediumBlogSection;
-
 
 

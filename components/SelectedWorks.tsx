@@ -74,7 +74,7 @@ const SelectedWorks = () => {
       <div className="max-w-[1280px] mx-auto">
         <SectionHeader
           title="Selected Works"
-          description="Production infrastructure, cloud platforms, and DevOps systems I've designed and operate."
+          description="Backend systems and products I've built — APIs, payments, and scalable platforms."
         />
 
         <div className="space-y-0 relative">

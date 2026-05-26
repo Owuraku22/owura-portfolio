@@ -2,26 +2,26 @@
 
 import React, { useState } from "react";
 import {
-  SiAmazonwebservices,
-  SiTerraform,
-  SiDocker,
-  SiGithubactions,
-  SiHashicorp,
-  SiCloudflare,
-  SiApacheairflow,
-  SiPostgresql,
-  SiGrafana,
-  SiPython,
-  SiGit,
-  SiLinux,
-  SiNomad ,
-  SiProxmox ,
-  SiPrometheus,
-  SiKubernetes,
-  SiJenkins,
+  SiAdonisjs,
   SiClaude,
+  SiDjango,
+  SiDocker,
+  SiFastapi,
+  SiGithubactions,
+  SiGit,
+  SiGooglegemini,
+  SiJavascript,
+  SiJira,
+  SiLaravel,
+  SiLinux,
+  SiNginx,
+  SiOpenai,
+  SiPhp,
+  SiPhpstorm,
+  SiPostgresql,
+  SiPython,
 } from "react-icons/si";
-import { VscTerminalBash } from "react-icons/vsc";
+import { VscTerminalBash, VscVscode } from "react-icons/vsc";
 import ScrollReveal from "./ScrollReveal";
 
 interface Tool {
@@ -31,31 +31,35 @@ interface Tool {
   bg: string;
 }
 
+// Backend-first: languages + frameworks closest to the center, with supporting ops tools.
 const ring1Tools: Tool[] = [
-  { name: "Terraform", Icon: SiTerraform, color: "#7b42bc", bg: "#f3ebff" },
-  { name: "Docker", Icon: SiDocker, color: "#2496ed", bg: "#e8f4fd" },
-  { name: "Nomad", Icon: SiNomad, color: "#7b42bc", bg: "#f3ebff" },
-  { name: "GitHub Actions", Icon: SiGithubactions, color: "#2088ff", bg: "#e8f1ff" },
-  { name: "Proxmox VE", Icon: SiProxmox, color: "#e66f00", bg: "#f3ebff" },
-  { name: "Jenkins", Icon: SiJenkins, color: "#DD691D", bg: "#f3ebff" },
+  { name: "Laravel", Icon: SiLaravel, color: "#ff2d20", bg: "#fff0ef" },
+  { name: "Django", Icon: SiDjango, color: "#0c4b33", bg: "#eaf7f1" },
+  { name: "FastAPI", Icon: SiFastapi, color: "#009688", bg: "#e7f7f5" },
+  { name: "AdonisJS", Icon: SiAdonisjs, color: "#5a45ff", bg: "#efedff" },
+  { name: "PostgreSQL", Icon: SiPostgresql, color: "#336791", bg: "#eaf0f7" },
+  { name: "Nginx", Icon: SiNginx, color: "#009639", bg: "#eaf8f0" },
 ];
 
 const ring2Tools: Tool[] = [
-  { name: "HashiCorp", Icon: SiHashicorp, color: "#000000", bg: "#f5f5f5" },
-  { name: "Cloudflare", Icon: SiCloudflare, color: "#f38020", bg: "#fff4ec" },
-  { name: "Airflow", Icon: SiApacheairflow, color: "#017cee", bg: "#e6f2ff" },
-  { name: "PostgreSQL", Icon: SiPostgresql, color: "#336791", bg: "#eaf0f7" },
-  { name: "Grafana", Icon: SiGrafana, color: "#f46800", bg: "#fff3e8" },
-  { name: "Kubernetes", Icon: SiKubernetes, color: "#017cee", bg: "#fff3e8" },
+  { name: "Python", Icon: SiPython, color: "#3776ab", bg: "#eef4fb" },
+  { name: "PHP", Icon: SiPhp, color: "#777bb4", bg: "#f0f1fb" },
+  { name: "JavaScript", Icon: SiJavascript, color: "#f7df1e", bg: "#fffbe8" },
+  { name: "Docker", Icon: SiDocker, color: "#2496ed", bg: "#e8f4fd" },
+  { name: "GitHub Actions", Icon: SiGithubactions, color: "#2088ff", bg: "#e8f1ff" },
+  { name: "Git", Icon: SiGit, color: "#f05032", bg: "#fff0ed" },
 ];
 
 const ring3Tools: Tool[] = [
-  { name: "Python", Icon: SiPython, color: "#3776ab", bg: "#eef4fb" },
+  { name: "VS Code", Icon: VscVscode, color: "#007acc", bg: "#e6f2ff" },
+  { name: "PHPStorm", Icon: SiPhpstorm, color: "#111827", bg: "#f3f4f6" },
+  { name: "Codex", Icon: SiOpenai, color: "#10a37f", bg: "#e8fbf5" },
+  { name: "ChatGPT", Icon: SiOpenai, color: "#10a37f", bg: "#e8fbf5" },
+  { name: "Gemini", Icon: SiGooglegemini, color: "#4285f4", bg: "#e8f1ff" },
+  { name: "Project Management", Icon: SiJira, color: "#0052cc", bg: "#e8f1ff" },
+  { name: "Linux", Icon: SiLinux, color: "#111827", bg: "#f3f4f6" },
   { name: "Bash", Icon: VscTerminalBash, color: "#4eaa25", bg: "#edf7ea" },
-  { name: "Git", Icon: SiGit, color: "#f05032", bg: "#fff0ed" },
-  { name: "Linux", Icon: SiLinux, color: "#fcc624", bg: "#fffbe8" },
-  { name: "Prometheus", Icon: SiPrometheus, color: "#fcc624", bg: "#fffbe8" },
-  { name: "Claude", Icon: SiClaude, color: "#ff8800", bg: "#fffbe8" },
+  { name: "Claude", Icon: SiClaude, color: "#ff8800", bg: "#fff4e8" },
 ];
 
 interface OrbitItemProps {
@@ -174,7 +178,7 @@ const TechStackOrbit = () => {
               My Tech Arsenal
             </h2>
             <p className="text-lg md:text-xl text-gray-600 font-normal mx-auto">
-              The tools I reach for daily to build, ship, and operate production systems.
+              Backend-first tools I use to build APIs, ship features, and run production systems.
             </p>
           </div>
         </ScrollReveal>
@@ -202,9 +206,9 @@ const TechStackOrbit = () => {
                 style={{ inset: "175px" }}
               />
 
-              {/* Center — AWS */}
+              {/* Center — Backend */}
               <div className="absolute inset-0 flex items-center justify-center z-10">
-                <CenterAWS />
+                <CenterBackend />
               </div>
 
               {/* Ring 1 items — r≈80 */}
@@ -286,28 +290,28 @@ const TechStackOrbit = () => {
   );
 };
 
-const CenterAWS = () => {
+const CenterBackend = () => {
   const [hovered, setHovered] = useState(false);
 
   return (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="flex flex-col items-center justify-center w-20 h-20 rounded-full border-2 cursor-default transition-all duration-300 z-10"
+      className="flex flex-col items-center justify-center w-24 h-24 rounded-full border-2 cursor-default transition-all duration-300 z-10"
       style={{
-        background: hovered ? "#fff4ec" : "#fff",
+        background: hovered ? "#fff4e8" : "#fff",
         borderColor: hovered ? "#ff8800" : "#e5e7eb",
         boxShadow: hovered
           ? "0 0 0 8px rgba(255,136,0,0.08), 0 8px 32px -8px rgba(255,136,0,0.3)"
           : "0 4px 16px rgba(0,0,0,0.08)",
       }}
     >
-      <SiAmazonwebservices
-        style={{ fontSize: "36px", color: "#ff8800" }}
-      />
-      <span className="text-[9px] font-semibold tracking-wide mt-0.5"
-        style={{ color: "#ff8800" }}>
-        AWS
+      <SiLaravel style={{ fontSize: "38px", color: "#ff8800" }} />
+      <span
+        className="text-[10px] font-semibold tracking-wide mt-1"
+        style={{ color: "#ff8800" }}
+      >
+        Backend
       </span>
     </div>
   );

@@ -26,8 +26,8 @@ const Navbar = () => {
           <div className="hidden md:flex items-center">
             <Link href="/" className="flex items-center">
               <Image
-                src="/images/evans_logo.png"
-                alt="logo"
+                src="/images/owura_logo.png"
+                alt="Owura logo"
                 width={70}
                 height={70}
               />
@@ -48,8 +48,8 @@ const Navbar = () => {
           <div className="flex md:hidden items-center">
             <Link href="/" className="flex items-center">
               <Image
-                src="/images/evans_logo.png"
-                alt="logo"
+                src="/images/owura_logo.png"
+                alt="Owura logo"
                 width={50}
                 height={50}
               />
@@ -96,7 +96,7 @@ const Navbar = () => {
               </Link>
             </div>
             <Link
-              href="https://docs.google.com/document/d/1YJOAEK3MSCs9tlnThm2Hf3f3LrUw3BYVJK_9IoI9lNo/edit?tab=t.0"
+              href="/resume/Owura%20kwaku%20cv.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center text-center justify-center text-sm text-gray-500 border cursor-pointer rounded-full px-3 md:px-6 py-2 border-gray-500  font-medium  gap-4"

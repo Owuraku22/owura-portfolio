@@ -68,859 +68,816 @@ export interface WorkData {
 }
 
 export const works: WorkData[] = [
-  /* ─────────────────────────────────────────────────────────
-     1. Production Nomad Cluster
-  ───────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────
+     3. PNTSH — Group Fees & Payments Platform
+   ───────────────────────────────────────────────────────── */
   {
-    id: "production-nomad-cluster",
-    title: "Production Nomad Cluster",
-    category: "Platform Engineering",
+    id: "pntsh",
+    title: "PNTSH",
+    category: "Backend Engineering",
     description:
-      "Self-hosted hybrid orchestration platform running 10+ production workloads across a Mac Studio on-premises and a dedicated bare-metal OVH server — zero public IP exposure, automated deployments, centralized secrets.",
-    thumbnail: "/images/works/cropped-Hybrid.svg",
+      "Laravel backend for group fees and contributions — invites, payments (Paystack), OTP-verified withdrawals, notifications, and a Filament admin panel.",
+    thumbnail: "/projects/pntsh/pntsh-screen-1.png",
     summary:
-      "A ground-up platform engineering project for Ghana School of Law — designing and operating a production-grade hybrid Nomad cluster that eliminated manual deployments, removed all secrets from repositories, and cut build times by 16×. The platform runs 10+ services across two physical locations with zero open ports.",
-    readTime: "8 min read",
-
-    snapshot: {
-      role: "Sole Platform & DevOps Engineer",
-      duration: "2.5 months · 2025",
-      stack: [
-        "Nomad",
-        "Consul",
-        "Vault",
-        "Traefik",
-        "Cloudflare Zero Trust",
-        "GitHub Actions",
-        "Docker",
-        "OVH Cloud",
-        "OrbStack",
-        "Proxmox VE"
-      ],
-      context: "Ghana School of Law",
-      outcome: "10+ workloads · 2 locations · zero open ports · 16× faster builds",
-    },
-
-    problem: {
-      context:
-        "Ghana School of Law had no formal infrastructure. Applications ran on ad-hoc servers, deployments were manual SSH sessions, and secrets were hardcoded in environment files or committed directly to repositories.",
-      pain:
-        "Every deployment was a manual SSH session. Secrets lived in plaintext files. There was no way to know a service was down until users complained. A single hardware failure would have taken every digital service offline with no recovery plan.",
-      stakes:
-        "The school runs 10+ production services — student portal, HR system, records management, and internal tools — serving hundreds of students and staff daily. Downtime directly impacts enrollment, examinations, and day-to-day administration.",
-    },
-
-    goals: {
-      technical: [
-        "Zero public IP exposure — all traffic through Cloudflare Zero Trust tunnels",
-        "Zero secrets in repositories, environment files, or Docker images",
-        "Automated deployments on merge to main — no manual SSH required",
-        "Daily off-site database backups with verified restore capability",
-        "Service health visibility via dashboards",
-        "Warm standby across two physical locations — RTO under 30 minutes",
-      ],
-      constraints: [
-        "No budget for managed cloud — must run on existing Mac Studio + low-cost bare metal",
-        "Single engineer — must be fully operable and recoverable by one person",
-        "Existing applications must migrate with zero downtime",
-        "ARM64 on-premises (Mac Studio) vs x86_64 cloud — multi-architecture builds required",
-      ],
-    },
-
-    architecture: {
-      diagram: "/images/works/cropped-Hybrid.svg",
-      overview:
-        "A hybrid two-location Nomad cluster with a shared HashiCorp control plane (Nomad + Consul + Vault), zero-trust ingress via Cloudflare tunnels, and GitOps-style deployments through GitHub Actions. No port is ever opened on either server — all traffic flows outbound through Cloudflare. The Mac Studio runs the dev environment and the warm standby; OVH bare-metal runs staging and active production.",
-      components: [
-        {
-          name: "HashiCorp Nomad",
-          purpose:
-            "Job scheduler — runs all 10+ production workloads as Docker containers with health-checked routing",
-        },
-        {
-          name: "HashiCorp Consul",
-          purpose:
-            "Service discovery and health checking — Traefik reads the service registry dynamically, no manual routing config",
-        },
-        {
-          name: "HashiCorp Vault",
-          purpose:
-            "Centralized secrets engine — KV v2 for static secrets, JWT workload auth so containers never hold static credentials",
-        },
-        {
-          name: "Traefik",
-          purpose:
-            "Reverse proxy — dynamically routes traffic based on Consul service registrations and handles TLS termination",
-        },
-        {
-          name: "Cloudflare Zero Trust Tunnel",
-          purpose:
-            "Public ingress — outbound-only persistent connection, no inbound ports open on either server",
-        },
-        {
-          name: "GitHub Actions + GHCR",
-          purpose:
-            "CI/CD — builds multi-arch Docker images, pushes to GHCR, triggers Nomad job updates on merge to main",
-        },
-        {
-          name: "OrbStack (Mac Studio)",
-          purpose:
-            "Type-2 hypervisor on macOS — runs 7 Ubuntu ARM64 VMs mirroring production exactly as a warm standby",
-        },
-        {
-          name: "Proxmox VE (OVH)",
-          purpose:
-            "Type-1 hypervisor on bare metal — runs 7 Ubuntu x86_64 VMs as the active production environment",
-        },
-      ],
-      decisions: [
-        {
-          decision: "Nomad over Kubernetes",
-          rationale:
-            "Single-engineer operation requires simplicity. Nomad has no etcd, no separate control plane complexity. A K8s cluster would take days to recover from scratch; Nomad takes hours. The operational overhead difference is night and day at this scale.",
-        },
-        {
-          decision: "Cloudflare Zero Trust over VPN or open ports",
-          rationale:
-            "Zero public IP means zero attack surface. Traditional setups require open ports or a cloud load balancer — both add cost and risk. Cloudflare tunnels are free, outbound-only, and survive NAT and firewalls. Perfect for a hybrid setup where the on-prem node sits behind a home router.",
-        },
-        {
-          decision: "HashiCorp Vault over cloud secrets managers",
-          rationale:
-            "Self-hosted means no AWS dependency for secrets. Vault's JWT workload auth means containers never see a static credential — they authenticate at startup and receive exactly what they need for that run. Eliminates the entire class of 'credentials leaked in logs' incidents.",
-        },
-        {
-          decision: "OrbStack for on-premises VMs",
-          rationale:
-            "Mac Studio + OrbStack gives ARM64 VMs with near-native performance at zero cost. OrbStack is dramatically faster and lighter than VMware Fusion. The warm standby mirrors production exactly — same VM count, same job specs, same config.",
-        },
-      ],
-    },
-
-    implementation: [
-      {
-        title: "Infrastructure as Code",
-        description:
-          "All Nomad job specs, Consul service definitions, and Vault policies are version-controlled as HCL. The entire cluster state is reproducible from the repository.",
-        points: [
-          "One Nomad HCL job spec per service — parameterized with an image tag variable",
-          "Vault policies defined as code — least-privilege scoped per workload identity",
-          "Consul service definitions co-located with job specs",
-          "Bootstrap Bash scripts for new node provisioning — full cluster from scratch in under 2 hours",
-        ],
-        snippets: [
-          {
-            language: "hcl",
-            label: "Nomad job with Vault secret injection",
-            code: `job "api-server" {
-  datacenters = ["prod"]
-  type        = "service"
-
-  group "app" {
-    task "server" {
-      driver = "docker"
-
-      config {
-        image = "ghcr.io/org/api:\${var.image_tag}"
-      }
-
-      vault { policies = ["api-server-policy"] }
-
-      template {
-        data        = <<EOH
-{{ with secret "kv/data/api-server" }}
-DB_PASSWORD={{ .Data.data.db_password }}
-REDIS_URL={{ .Data.data.redis_url }}
-{{ end }}
-EOH
-        destination = "secrets/.env"
-        env         = true
-      }
-    }
-  }
-}`,
-          },
-        ],
-      },
-      {
-        title: "CI/CD Pipeline",
-        description:
-          "GitHub Actions builds multi-architecture Docker images on self-hosted runners, pushes to GHCR, and triggers Nomad job updates on merge to main — zero manual steps.",
-        points: [
-          "Multi-stage Docker builds reduced image sizes 60–80% and eliminated bloated layers",
-          "Shared base-image strategy cut redundant dependency installation across every service",
-          "Self-hosted ARM64 runner on Mac Studio for on-prem builds",
-          "Self-hosted x86_64 runner on OVH for production builds",
-          "GitOps: merge to main → automatic deploy, or push a new git tag → automatic deploy, no manual SSH, ever",
-        ],
-        snippets: [
-          {
-            language: "yaml",
-            label: "GitHub Actions build & deploy workflow",
-            code: `name: Build & Deploy
-on:
-  push:
-    branches: [main]
-
-jobs:
-  deploy:
-    runs-on: [self-hosted, linux, ARM64]
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build & push image
-        run: |
-          docker build -t ghcr.io/org/api:\${{ github.sha }} .
-          docker push ghcr.io/org/api:\${{ github.sha }}
-
-      - name: Deploy to Nomad
-        run: |
-          nomad job run \\
-            -var="image_tag=\${{ github.sha }}" \\
-            jobs/api.nomad`,
-          },
-        ],
-      },
-      {
-        title: "Zero Trust Networking",
-        description:
-          "All public traffic routes through Cloudflare Zero Trust Tunnels — no port is open on either server. Traefik handles TLS termination and dynamic routing populated from the Consul service registry.",
-        points: [
-          "cloudflared runs as a Nomad service on the router VM in each environment",
-          "Traefik reads routes from Consul — no manual config needed when a new service starts",
-          "All *.gslaw.school domains route through Cloudflare — zero direct IP exposure",
-          "Internal service-to-service traffic uses Consul service mesh — no hardcoded IPs",
-        ],
-      },
-      {
-        title: "Secrets Management",
-        description:
-          "HashiCorp Vault eliminated all plaintext secrets. Containers authenticate via JWT at startup and receive exactly the credentials they need — nothing more.",
-        points: [
-          "KV v2 engine for static secrets — database passwords, API keys, third-party tokens",
-          "JWT workload auth — each Nomad job carries a unique identity token scoped to its policy",
-          "Vault policies enforce least-privilege — api-server cannot read database admin secrets",
-          "Zero secrets in .env files, Docker images, CI/CD logs, or git history",
-        ],
-      },
-      {
-        title: "Observability & Backups",
-        description:
-          "Prometheus and Grafana provide cluster-wide metrics visibility. Automated nightly PostgreSQL dumps ship encrypted to Backblaze B2 via Nomad periodic jobs.",
-        points: [
-          "Prometheus scrapes Nomad, Consul, and application health metrics",
-          "Grafana dashboards for cluster health, job status, and resource utilization",
-          "Nomad periodic job runs pg_dump nightly, encrypts output, ships to Backblaze B2",
-          "Every production database covered — restore tested and verified monthly",
-        ],
-      },
-    ],
-
-    challenges: [
-      {
-        title: "Multi-architecture builds: ARM64 on-prem vs x86_64 in cloud",
-        description:
-          "The Mac Studio uses Apple Silicon (ARM64). The OVH bare-metal server is x86_64. Docker images built for one architecture won't run on the other. Initial CI builds either failed on the wrong runner or took 4+ hours using QEMU emulation for cross-compilation.",
-        solution:
-          "Added a self-hosted GitHub Actions runner on each machine — ARM64 on Mac Studio, x86_64 on OVH. Each runner builds images only for its native architecture. Introduced a shared base-image strategy to eliminate redundant dependency installation. Build times dropped from 4+ hours to under 15 minutes.",
-      },
-      {
-        title: "Vault bootstrap: the chicken-and-egg unseal problem",
-        description:
-          "Vault needs to be initialized and unsealed before any service can fetch secrets. But the unseal keys are themselves sensitive. During initial bootstrap, a single wrong step can lock you out of the entire secrets engine — and recovering from a sealed Vault in production is a stressful, manual process.",
-        solution:
-          "Documented the bootstrap sequence step-by-step with explicit checkpoints. Stored encrypted unseal key shards in a secure offline location separate from the cluster. Wrote a health-check script that alerts within 60 seconds if Vault becomes sealed unexpectedly. Bootstrap is now a 15-minute repeatable process any engineer can follow.",
-      },
-      {
-        title: "Consul health check race conditions on rolling deploy",
-        description:
-          "During rolling deploys, Traefik would briefly route traffic to containers that hadn't finished starting up, causing intermittent 502 errors. Consul health checks were registering services as healthy before the application was truly ready to serve traffic.",
-        solution:
-          "Added startup health-check grace periods in Nomad job specs and tightened Consul check intervals from 30s to 5s with a 3-failure deregistration threshold. Implemented TCP health checks alongside HTTP — a service must pass both before Traefik routes to it. 502 errors dropped to zero on the next deploy.",
-      },
-    ],
-
-    impact: {
-      summary:
-        "The platform transformed Ghana School of Law from ad-hoc manual deployments to a fully automated, observable, and secure production infrastructure — all operated by a single engineer.",
-      metrics: [
-        {
-          metric: "Build Time",
-          before: "4+ hours",
-          after: "< 15 min",
-          improvement: "16× faster",
-        },
-        {
-          metric: "Deployment Process",
-          before: "Manual SSH",
-          after: "Merge to main",
-          improvement: "Fully automated",
-        },
-        {
-          metric: "Secrets Exposure",
-          before: "Plaintext in repos",
-          after: "Vault-only",
-          improvement: "Zero exposure",
-        },
-        {
-          metric: "Public Attack Surface",
-          before: "Open ports",
-          after: "Zero open ports",
-          improvement: "Eliminated",
-        },
-        {
-          metric: "Database Backups",
-          before: "None",
-          after: "Nightly automated",
-          improvement: "Full coverage",
-        },
-        {
-          metric: "Recovery Time",
-          before: "Unknown / days",
-          after: "< 30 min",
-          improvement: "Warm standby",
-        },
-      ],
-      businessOutcome:
-        "The school ships updates to production in under 15 minutes with confidence. A hardware failure on either location can be recovered from in under 30 minutes by promoting the standby. The platform has been running without incident since launch.",
-    },
-
-    reflections: {
-      wouldDoDifferently: [
-        "Automate the Vault unseal process from day one — the manual unseal step is the only part of the cluster not fully automated, and it's a single-engineer dependency I want to eliminate",
-        "Add Nomad Autoscaler earlier — scaling is currently manual, which means keeping capacity headroom in my head at all times",
-        "Implement structured JSON logging from day one rather than retrofitting — adding log aggregation to services not built with it is significantly harder",
-      ],
-      keyTakeaways: [
-        "Zero Trust networking is not a 'nice to have' for a single-engineer shop — it's the only way to secure a multi-location cluster without a dedicated network team or a cloud VPN budget",
-        "Nomad's simplicity is a genuine engineering advantage, not a compromise — a midnight cluster recovery drill confirmed that a self-hosted Nomad cluster is recoverable by one person in under an hour",
-        "The shared base-image strategy was the single highest-leverage CI optimization — one change simultaneously cut build times across every service in the cluster",
-      ],
-    },
-  },
-
-  /* ─────────────────────────────────────────────────────────
-     2. Airflow ETL & Backup Pipeline
-  ───────────────────────────────────────────────────────── */
-  {
-    id: "airflow-etl-backup-pipeline",
-    title: "Airflow ETL & Backup Pipeline",
-    category: "Data Infrastructure",
-    description:
-      "Self-hosted data platform on top of the Nomad cluster — Airflow DAGs ingesting from multiple PostgreSQL sources into a central analytics warehouse, with automated nightly backups to Backblaze B2.",
-    thumbnail: "/images/works/cropped-Automated-ETL-Pipeline.svg",
-    summary:
-      "A production data platform built on HashiCorp Nomad, running Apache Airflow with Vault-backed connection strings. ETL DAGs ingest from HR, Records, SMS, Service Desk etc databases into a central warehouse surfaced through Metabase. Automated nightly backups ship to Backblaze B2 — covering every production database.",
+      "PNTSH is a Laravel 12 API powering a group-based contributions product. It supports group creation and membership, invite flows, fee creation, member payments via Paystack, and owner withdrawals with OTP-verified payout accounts — with notifications delivered via email and push.",
     readTime: "6 min read",
     snapshot: {
-      role: "DevOps & Data Platform Engineer",
-      duration: "2 weeks · 2025",
+      role: "Backend Developer",
+      duration: "2026",
       stack: [
-        "Apache Airflow",
-        "Nomad",
-        "PostgreSQL",
-        "Vault",
-        "Metabase",
-        "Backblaze B2",
-        "Bash",
-        "Redis",
+        "Laravel 12",
+        "PHP",
+        "MySQL",
+        "Laravel Sanctum",
+        "Filament",
+        "Paystack",
+        "Hubtel SMS",
+        "Firebase FCM",
+        "Laravel Mail",
       ],
-      context: "Ghana School of Law",
+      context: "Backend API Project",
       outcome:
-        "Analytics platform live · 100% database backup coverage · zero credentials in DAG code",
+        "Group invites + fee payments · Paystack verification webhooks · OTP-verified withdrawals",
     },
     problem: {
       context:
-        "The school had multiple PostgreSQL databases (HR, records, service desk etc) with no analytics layer and no backup strategy. Business decisions were made without data.",
+        "Group contributions need simple, reliable flows: create a group, invite members, collect payments, and let owners withdraw funds safely — all while keeping accounting accurate.",
       pain:
-        "No visibility into school operations. Manual reporting took days. Any database server failure would result in permanent, unrecoverable data loss.",
+        "Without strong payment verification, idempotent callbacks, and safe withdrawal controls, financial flows become inconsistent and risky. Small edge cases (duplicate webhooks, partial payments, unverified payout accounts) cause big issues.",
       stakes:
-        "Student enrollment data, exam records, and HR information with no disaster recovery — a single drive failure away from catastrophic institutional data loss.",
+        "Payments must be trustworthy and auditable. Users need confidence that their contributions are recorded correctly, and group owners need safe withdrawals with clear checks and balances.",
     },
     goals: {
       technical: [
-        "Worked hand-in-hand with the analyst to Deploy Airflow on the existing Nomad cluster — no new infrastructure",
-        "ETL from 3 PostgreSQL source systems into a central analytics warehouse",
-        "Automated nightly backups to off-site cloud storage",
-        "Zero credentials in DAG code or environment files",
-        "Analyst team manages DAGs independently from infrastructure changes",
+        "Secure auth for mobile clients (Sanctum)",
+        "Group + membership management with ownership controls",
+        "Two invite modes: direct invites and invite links",
+        "Fee creation and tracking (active/closed) with accurate totals",
+        "Payments via Paystack (init + verify + webhook handling)",
+        "Withdrawals via Paystack transfers with OTP verification",
+        "Notifications via email + push (FCM)",
+        "Admin operations via Filament",
       ],
       constraints: [
-        "Must run on existing cluster — zero new infrastructure budget",
-        "Analyst-owned DAG repository must stay isolated from infrastructure concerns",
+        "Design for webhook retries (idempotency)",
+        "Keep accounting updates consistent and transaction-safe",
+        "Treat withdrawals as high-risk actions with extra verification",
       ],
     },
     architecture: {
-      diagram: "/images/works/cropped-Automated-ETL-Pipeline.svg",
+      diagram: "/projects/pntsh/pntsh-architecture.png",
       overview:
-        "Airflow deployed as Nomad services (scheduler, webserver, workers) with Vault-backed connection URIs. A pull-based DAG sync model isolates analyst workflows from infrastructure. Backup jobs run as Nomad periodic tasks — one per database, independent failure domains.",
+        "A layered Laravel API (routes → controllers → services → Eloquent/MySQL) with dedicated modules for groups, invites, fees, payments, withdrawals, and notifications. Payments and withdrawals integrate with Paystack, payout account verification uses Hubtel SMS OTP, and notifications fan out to email + Firebase FCM.",
       components: [
         {
-          name: "Apache Airflow",
-          purpose:
-            "DAG orchestration — schedules and executes ETL and backup tasks",
+          name: "Auth (Laravel Sanctum)",
+          purpose: "Secures API access for mobile clients and admins.",
         },
         {
-          name: "HashiCorp Vault",
-          purpose:
-            "Supplies database connection strings at task execution time — zero credentials stored in Airflow or DAG files",
+          name: "Groups & Membership",
+          purpose: "Group creation, membership joins, and ownership permissions.",
         },
         {
-          name: "PostgreSQL Sources",
+          name: "Invites",
           purpose:
-            "HR, Records Management, and Service Desk source databases feeding the ETL pipeline",
+            "Direct invites and invite links for onboarding members into groups.",
         },
         {
-          name: "Metabase",
+          name: "Fees",
           purpose:
-            "BI dashboard layer surfacing warehouse data to school leadership and operations staff",
+            "Fee lifecycle (create, active/closed) and aggregate totals for collection/withdrawal.",
         },
         {
-          name: "Backblaze B2",
+          name: "Payments (Paystack)",
           purpose:
-            "Off-site backup destination — encrypted nightly dumps from every production database",
+            "Initialize and verify fee payments and record durable payment state transitions.",
+        },
+        {
+          name: "Withdrawals + Payout Accounts",
+          purpose:
+            "OTP verification for payout accounts and Paystack transfers for withdrawals.",
+        },
+        {
+          name: "Notification Service",
+          purpose:
+            "Triggers push notifications (FCM) and email updates for key events.",
+        },
+        {
+          name: "Admin Panel (Filament)",
+          purpose:
+            "Operational visibility and moderation of groups, fees, payments, and withdrawals.",
+        },
+        {
+          name: "MySQL",
+          purpose: "Primary datastore for users, groups, fees, payments, and withdrawals.",
         },
       ],
       decisions: [
         {
-          decision: "Pull-based DAG sync from a separate analyst repository",
+          decision: "Service layer for business logic",
           rationale:
-            "Analysts own the DAG repository independently. A cron job on the Airflow worker pulls from the analyst repo — analysts can update and deploy DAGs without ever needing cluster access.",
+            "Keeps controllers thin and concentrates payment/withdrawal rules in testable, reusable services.",
         },
         {
-          decision: "Vault-backed connection URIs over Airflow's connections UI",
+          decision: "Webhook verification + idempotency mindset",
           rationale:
-            "Airflow's connections UI stores credentials in its metadata database. Vault injection means credentials are fetched at task run time — not persisted anywhere in Airflow, not visible in logs.",
+            "Paystack can retry events; the API must safely handle duplicate callbacks without double-counting payments.",
+        },
+        {
+          decision: "OTP for withdrawal account verification",
+          rationale:
+            "Withdrawals are high-risk; requiring OTP via SMS reduces fraud and prevents misdirected payouts.",
+        },
+        {
+          decision: "Filament for admin tooling",
+          rationale:
+            "Accelerates internal dashboards and operations without building a separate admin frontend.",
         },
       ],
     },
     implementation: [
       {
-        title: "Airflow on Nomad",
+        title: "Domain modules and routing",
         description:
-          "Airflow scheduler, webserver, and Celery workers deployed as separate Nomad services with Vault-injected secrets.",
+          "API routes are organized around the product’s core modules (groups, invites, fees, payments, withdrawals).",
         points: [
-          "Separate Nomad jobs for scheduler, webserver, and Celery workers — independent scaling",
-          "Vault policy grants Airflow read-only access to connection string secrets",
-          "Redis deployed as a Nomad service for the Celery broker",
-          "Airflow metadata PostgreSQL runs on the existing db-01 node",
+          "Clear REST endpoints for group lifecycle and membership",
+          "Separate flows for direct invites vs invite links",
+          "Admin routes exposed via Filament",
+        ],
+        snippets: [
+          {
+            language: "mermaid",
+            label: "System flow (high-level)",
+            code: `flowchart TB
+    subgraph LaravelAPI[Laravel API]
+      auth[Auth & Sanctum]
+      groups[Groups & Membership]
+      invites[Invites/Invite Links]
+      fees[Group Fees]
+      payments[Payments]
+      withdrawals[Withdrawals]
+      notify[Notification Service]
+      adminc[Admin/Filament Modules]
+    end
+
+    db[(MySQL)]
+    paystack[Paystack]
+    hubtel[Hubtel SMS]
+    fcm[Firebase]
+    mail[SMTP]
+
+    auth --> db
+    groups --> db
+    invites --> db
+    fees --> db
+    payments --> db
+    withdrawals --> db
+    adminc --> db
+
+    payments --> paystack
+    withdrawals --> paystack
+    withdrawals --> hubtel
+    notify --> fcm
+    notify --> mail`,
+          },
         ],
       },
       {
-        title: "ETL DAGs",
+        title: "Payments: init → verify → finalize",
         description:
-          "Incremental ETL DAGs pulling from source databases into a central warehouse schema daily.",
+          "Payments are created as PENDING, verified against Paystack, then finalized with consistent DB updates.",
         points: [
-          "Daily incremental loads with full-refresh fallback for schema changes",
-          "Schema validation step before loading to catch upstream structural changes",
-          "Alerting on DAG failure via webhook notification",
-          "Pull-based DAG sync — cron job pulls from analyst repo to worker every 5 minutes",
+          "Store Paystack reference per payment",
+          "Verify on callback/webhook before marking SUCCESS",
+          "Update fee totals after successful verification",
+        ],
+        snippets: [
+          {
+            language: "mermaid",
+            label: "Payment + withdrawal sequence",
+            code: `sequenceDiagram
+    participant U as User (Member)
+    participant API as Laravel API
+    participant Pay as Paystack
+    participant DB as Database
+    participant O as Group Owner
+
+    U->>API: POST /groups/{groupId}/fees/{feeId}/pay
+    API->>DB: Create/Update payment (PENDING, reference)
+    API->>Pay: Initialize transaction
+    Pay-->>API: authorization_url
+    API-->>U: payment link/reference
+
+    Pay-->>API: Webhook charge.success
+    API->>Pay: Verify transaction
+    Pay-->>API: success
+    API->>DB: Update payment=SUCCESS, paid_at
+    API->>DB: Update fee totals (total_collected, total_paid_members)
+
+    O->>API: POST /withdrawal/request-otp
+    API->>O: OTP sent (Hubtel SMS)
+
+    O->>API: POST /withdrawal/verify-otp
+    API->>Pay: Create transfer recipient
+    API->>DB: Save withdrawal_account(recipient_code)
+
+    O->>API: POST /group/{groupId}/fee/{feeId}/withdraw-funds
+    API->>DB: Validate owner, closed fee, available amount
+    API->>Pay: Transfer funds
+    Pay-->>API: transfer reference/status
+    API->>DB: Insert group_withdrawals
+    API->>DB: Increment group_fees.total_withdrawn (on success)
+    API-->>O: Withdrawal result`,
+          },
         ],
       },
       {
-        title: "Backup Pipeline",
+        title: "Withdrawals with safety checks",
         description:
-          "Nomad periodic jobs run pg_dump on a nightly schedule, encrypt, and ship to Backblaze B2.",
+          "Withdrawals validate ownership, fee closure rules, and available balance before initiating a transfer.",
         points: [
-          "One periodic Nomad job per database — independent failure domains, separate logs",
-          "GPG encryption before upload — backups are encrypted at rest in B2",
-          "Restore procedure tested against a separate PostgreSQL instance monthly",
-          "B2 lifecycle rules retain 30 days of daily backups",
+          "OTP-verifies payout account before enabling withdrawals",
+          "Records group_withdrawals and updates total_withdrawn",
+          "Rejects withdrawals when fee is not closed or balance is insufficient",
+        ],
+      },
+      {
+        title: "Notifications",
+        description:
+          "Event-driven notifications keep members informed about invites, fees, payments, and withdrawals.",
+        points: [
+          "Push notifications via Firebase FCM",
+          "Email notifications via Laravel Mail",
         ],
       },
     ],
     challenges: [
       {
-        title: "Airflow DB migration race condition on Nomad cluster restart",
+        title: "Preventing double-counted payments",
         description:
-          "Airflow runs database migrations on startup. On Nomad, after a cluster restart, the scheduler and webserver can start simultaneously — both attempt the migration and one fails with a lock conflict.",
+          "Payment providers may send duplicate webhooks, and users may retry checkout. Without protections, totals can drift.",
         solution:
-          "Added a dedicated pre-start migration Nomad job that runs to completion before the main Airflow services. Nomad lifecycle prestart hooks ensure the migration finishes before any Airflow process starts.",
+          "Model payments as a state machine (PENDING → SUCCESS/FAILED) and verify against Paystack before finalizing. Treat webhook handling as idempotent and only apply fee total updates once per reference.",
+      },
+      {
+        title: "Withdrawal safety and verification",
+        description:
+          "Allowing withdrawals without strong verification can lead to misdirected funds or fraud.",
+        solution:
+          "Require OTP verification (Hubtel SMS) to create/activate a payout recipient, then perform Paystack transfers only for verified accounts.",
       },
     ],
     impact: {
       summary:
-        "Gave the school its first analytics platform and eliminated data loss risk across all production databases.",
+        "A complete backend foundation for group contributions with reliable payment verification and safe withdrawal flows.",
       metrics: [
         {
-          metric: "Database Backup Coverage",
-          before: "0%",
-          after: "100%",
-          improvement: "Full coverage",
+          metric: "Payment verification",
+          before: "Unverified callbacks",
+          after: "Verified against Paystack",
+          improvement: "Trustworthy state",
         },
         {
-          metric: "Analytics Reporting",
-          before: "Manual, days",
-          after: "Automated dashboards",
-          improvement: "Live insights",
+          metric: "Withdrawal safety",
+          before: "No secondary verification",
+          after: "OTP-verified payout account",
+          improvement: "Reduced risk",
         },
         {
-          metric: "Credentials in DAG code",
-          before: "Plaintext",
-          after: "Vault-only",
-          improvement: "Zero exposure",
+          metric: "Operations",
+          before: "No admin tooling",
+          after: "Filament admin panel",
+          improvement: "Faster support",
         },
       ],
       businessOutcome:
-        "School leadership has live dashboards for enrollment, HR, and service desk operations. Any database can be restored to the previous night within 30 minutes.",
+        "Members can pay fees confidently, owners can withdraw safely, and admins can monitor activity with clear records for support and auditing.",
     },
     reflections: {
       wouldDoDifferently: [
-        "Add data quality checks (row counts, null rates) into the ETL pipeline from day one",
-        "Use Airflow's Vault backend plugin instead of template injection for a cleaner secrets integration",
+        "Add explicit idempotency keys and DB-level uniqueness constraints for provider references",
+        "Expand automated tests around webhook edge cases and partial failures",
       ],
       keyTakeaways: [
-        "Running Airflow on Nomad requires careful attention to startup ordering — lifecycle prestart hooks are the right tool, not sleep timers",
-        "The pull-based DAG sync model was the right call — analysts iterate freely without ever needing cluster access or infrastructure knowledge",
+        "In payment systems, correctness beats cleverness — verify, record, and reconcile",
+        "Withdrawals deserve a higher security bar than deposits",
       ],
     },
   },
 
   /* ─────────────────────────────────────────────────────────
-     3. Multi-Region DR Platform
-  ───────────────────────────────────────────────────────── */
+     4. Event-Crypt — Voting & Ticketing Platform
+   ───────────────────────────────────────────────────────── */
   {
-    id: "aws-multi-region-dr-platform",
-    title: "Multi-Region DR Platform",
-    category: "Solutions Architecture",
+    id: "event-crypt",
+    title: "Event-Crypt",
+    category: "Full-Stack Engineering",
     description:
-      "Multi-region disaster-recovery platform on AWS — Step Functions failover orchestration, warm-standby ECS, cross-region RDS replication, and a React operator dashboard with one-click failover.",
-    thumbnail: "/images/works/cropped-DR-Multi-Region.svg",
+      "Multi-tenant event platform for award voting and ticketing — web app + USSD flows, reliable payments, and DevOps to deploy and run the system in production.",
+    thumbnail: "/projects/eventcypt/event-crypt-screen-1.png",
     summary:
-      "A fully Terraform-provisioned multi-region DR platform on AWS demonstrating production-grade disaster recovery architecture. Primary region (us-east-1), warm standby (us-west-2), and a control plane (us-east-2) orchestrating failover via Step Functions. Includes a React operator dashboard for one-click failover and weekly automated DR drills.",
+      "Event-Crypt is a multi-tenant platform for organization-scoped award voting and ticketing events. I built the Vue + Inertia web app, the Laravel backend (payments, USSD, admin), and the operational setup (CI/CD, Nginx + PHP-FPM, workers) to run it reliably in production.",
     readTime: "7 min read",
     snapshot: {
-      role: "Solutions Architect & Cloud Engineer",
-      duration: "1 week · 2024",
+      role: "Full-Stack Engineer (Web · Backend · DevOps)",
+      duration: "2026",
       stack: [
-        "AWS ECS",
-        "RDS",
-        "S3",
-        "Step Functions",
-        "EventBridge",
-        "Lambda",
-        "API Gateway",
-        "Route 53",
-        "CloudWatch",
-        "Terraform",
+        "Laravel 12",
+        "PHP 8.2+",
+        "Vue 3",
+        "TypeScript",
+        "Inertia",
+        "Vite",
+        "Filament",
+        "PostgreSQL",
+        "Laravel Queue",
+        "Laravel Scheduler",
+        "Nginx",
+        "PHP-FPM",
+        "Linux",
+        "Hubtel Payments",
+        "Paystack (legacy)",
+        "Cloudinary",
+        "CI/CD (GitHub Actions)",
       ],
-      context: "Personal Lab Project",
-      outcome: "< 15 min RTO · automated weekly DR drills · one-click failover dashboard",
+      context: "Multi-tenant Product",
+      outcome:
+        "Web + USSD · layered payment verification · queue/scheduler reconciliation · CI/CD + Nginx/PHP-FPM deployment",
     },
     problem: {
       context:
-        "Most AWS architectures treat disaster recovery as an afterthought — bolted on after everything is already in production. This project explores what a properly architected multi-region DR platform looks like from the ground up.",
+        "Organizations running awards and ticketed events need a single platform where each organization can create events, collect votes and ticket purchases, and reliably reconcile payments across multiple user channels.",
       pain:
-        "No tested DR plan is the same as no DR plan. Manually-operated failover under pressure is slow, error-prone, and frequently fails on the details that were never practiced.",
+        "Payments can be inconsistent when webhooks are delayed, duplicated, or missed. USSD sessions require a deterministic state machine, and multi-tenant boundaries must be enforced everywhere (routes, queries, admin).",
       stakes:
-        "For any production system, unplanned downtime has direct revenue and reputational consequences. The goal is a system where failover is a boring, practiced, automated process — not a crisis.",
+        "Incorrect fulfillment (missing votes, duplicate votes, unfulfilled tickets) breaks trust and directly impacts revenue. The system must be auditable and resilient under provider variability.",
     },
     goals: {
       technical: [
-        "RTO under 15 minutes measured end-to-end",
-        "Automated weekly DR drill with CloudWatch outcome metrics",
-        "One-click failover via an operator dashboard",
-        "100% IaC — zero manual AWS console steps anywhere",
-        "Cross-region RDS read replica promoting automatically on failover",
+        "Multi-tenant boundary model (Organization → Events)",
+        "Web voting/ticketing flow (Vue + Inertia) with reliable payment fulfillment",
+        "USSD voting channel with cache-backed session state",
+        "Webhook handling with idempotency guards",
+        "Fallback payment verification (success page + queued jobs)",
+        "Admin operations via Filament (org + super-admin panels)",
+        "CI/CD pipeline and repeatable deployments (Nginx + PHP-FPM + workers)",
+        "Notifications via SMS + receipts",
       ],
       constraints: [
-        "Lab budget — cost-conscious design, stop/start patterns for non-critical resources",
-        "All Terraform — reusable modules for each infrastructure layer",
+        "Handle duplicate/retried provider callbacks safely",
+        "Ensure eventual consistency even when webhooks are missed",
+        "Keep tenant scoping explicit and enforceable",
       ],
     },
     architecture: {
-      diagram: "/images/works/cropped-DR-Multi-Region.svg",
+      diagram: "/projects/eventcypt/event-crypt-architecture.png",
       overview:
-        "Three-region architecture: control plane in us-east-2 (Step Functions + EventBridge), primary in us-east-1 (ECS + RDS + S3), warm standby in us-west-2 (ECS + RDS replica + S3 replication). Route 53 health-check-based DNS failover switches traffic automatically.",
+        "Clients (web, admin, USSD gateway) talk to a Laravel monolith with domain services for voting, ticketing, payments, and notifications. Payments integrate primarily with Hubtel, with layered verification (webhook + success verification + scheduled reconciliation). Data is stored in PostgreSQL, and async workloads run via queue jobs and the Laravel scheduler.",
       components: [
         {
-          name: "AWS Step Functions",
-          purpose:
-            "Orchestrates the failover workflow — promotes RDS replica, updates Route 53, scales standby ECS service to full capacity",
+          name: "Web App (Vue 3 + Inertia)",
+          purpose: "Voting and ticketing UI for end users.",
         },
         {
-          name: "EventBridge",
-          purpose:
-            "Schedules weekly automated DR drills and routes CloudWatch alarms to the failover workflow",
+          name: "USSD Gateway Integration",
+          purpose: "USSD voting channel via /api/ussd and a session state machine.",
         },
         {
-          name: "Amazon ECS",
+          name: "Laravel Monolith",
           purpose:
-            "Runs the reference application in both primary and standby regions",
+            "Routes/middleware, controllers, domain services, and queued jobs for voting/ticketing/payments.",
         },
         {
-          name: "Amazon RDS",
+          name: "Nginx + PHP-FPM",
           purpose:
-            "Primary database in us-east-1 with a cross-region read replica in us-west-2 promoted on failover",
+            "Production runtime: serves the web app and API, and runs queue workers and scheduled jobs alongside the app.",
         },
         {
-          name: "Route 53",
+          name: "Filament Admin Panels",
           purpose:
-            "Health-check-based DNS failover — automatically shifts traffic between primary and standby regions",
+            "Organization-scoped operations: event setup, nominee management, verification, monitoring.",
         },
         {
-          name: "API Gateway + Lambda",
+          name: "PostgreSQL",
+          purpose: "Primary datastore for tenants, events, votes, tickets, and payments.",
+        },
+        {
+          name: "Queue + Scheduler",
           purpose:
-            "Backend for the operator dashboard — triggers the failover workflow and queries replication lag metrics",
+            "Runs verification jobs and periodic reconciliation for pending payments.",
+        },
+        {
+          name: "Hubtel + Paystack",
+          purpose:
+            "Payment initialization, status checks, webhooks, and (legacy) parallel payment support.",
+        },
+        {
+          name: "SMS Providers",
+          purpose: "Delivers receipts/notifications for successful votes and ticket purchases.",
+        },
+        {
+          name: "Cloudinary",
+          purpose: "Media storage and delivery for event assets.",
         },
       ],
       decisions: [
         {
-          decision: "Warm standby over pilot light",
+          decision: "Layered payment verification",
           rationale:
-            "Pilot light has lower running cost but requires scale-up time under pressure — exactly the wrong moment to be waiting for capacity. Warm standby keeps a minimal-capacity ECS service running in the DR region, enabling sub-15-minute RTO without a capacity race during a real incident.",
+            "Combining webhook processing with success-page verification and scheduled reconciliation reduces lost-payment risk and improves eventual consistency.",
         },
         {
-          decision: "Step Functions for failover orchestration",
+          decision: "Cache-backed USSD state machine",
           rationale:
-            "Failover involves multiple sequential async steps with error handling and rollback. Step Functions makes the workflow visible, auditable, and retryable — far better than a Lambda calling other Lambdas with no execution history.",
+            "USSD is conversational and stateless per request; caching session state makes flows deterministic and resilient.",
+        },
+        {
+          decision: "Tenant scoping in routes + queries",
+          rationale:
+            "Multi-tenancy must be enforced consistently to prevent data leakage across organizations.",
         },
       ],
     },
     implementation: [
       {
-        title: "Terraform Module Architecture",
+        title: "Component architecture",
         description:
-          "Seven reusable Terraform modules — networking, compute, database, storage, monitoring, control-plane, and bastion. Each environment stack composes these modules.",
+          "The platform is organized as a Laravel monolith with domain services, async jobs, and clear boundaries to external providers.",
         points: [
-          "Remote state backend in S3 + DynamoDB state locking",
-          "Separate state files per module — limits blast radius of a bad apply",
-          "Dedicated CI/CD Terraform stack for plan/apply via GitHub Actions",
-          "All three regions provisioned from the same module definitions with region-specific variables",
+          "Multiple client channels: web, admin, and USSD",
+          "Domain services for payments, voting, receipts, and notifications",
+          "Queue jobs + scheduler for retries and reconciliation",
+        ],
+        snippets: [
+          {
+            language: "mermaid",
+            label: "High-level architecture",
+            code: `flowchart LR
+    subgraph Clients
+      WEB["Web Browser<br/>Voting/Ticketing"]
+      USSDGW["USSD Gateway/Telco"]
+      ADMIN["Admin/Super Admin<br/>Filament UI"]
+    end
+
+    subgraph App["Laravel Monolith"]
+      ROUTES["Routes + Middleware"]
+      CTRL["Controllers"]
+      SVC["Domain Services<br/>Hubtel, Voting, Receipt, Notifications"]
+      JOBS["Queue Jobs + Scheduler"]
+      MODELS["Eloquent Models + Scopes"]
+      CACHE["Cache Store"]
+    end
+
+    subgraph Data
+      DB["PostgreSQL / SQLite"]
+    end
+
+    subgraph External
+      HUBTEL["Hubtel APIs<br/>Checkout / Status / Send Money"]
+      PAYSTACK["Paystack APIs<br/>Legacy/parallel support"]
+      SMS["SMS Providers<br/>Hubtel/Arkesel"]
+      CLOUD["Cloudinary"]
+      CI["GitHub Actions CI"]
+    end
+
+    WEB --> ROUTES
+    ADMIN --> ROUTES
+    USSDGW --> ROUTES
+    ROUTES --> CTRL --> SVC --> MODELS --> DB
+    CTRL --> CACHE
+    SVC --> CACHE
+    SVC --> HUBTEL
+    SVC --> PAYSTACK
+    SVC --> SMS
+    SVC --> CLOUD
+    JOBS --> SVC
+    JOBS --> DB
+    JOBS --> HUBTEL
+    CI --> App`,
+          },
         ],
       },
       {
-        title: "Failover Workflow",
+        title: "Payment reliability (webhook + verification + reconciliation)",
         description:
-          "Step Functions state machine executes the failover sequence with compensating transactions on failure.",
+          "Payments are fulfilled via a layered approach to minimize missed callbacks and handle provider variability.",
         points: [
-          "Step 1: Promote RDS read replica to standalone primary",
-          "Step 2: Poll until RDS instance status is 'available' (async wait loop)",
-          "Step 3: Update ECS task definition with new DB endpoint",
-          "Step 4: Scale standby ECS service to full production capacity",
-          "Step 5: Update Route 53 weighted routing to shift 100% traffic to DR region",
-          "Step 6: Emit DR outcome metric to CloudWatch",
+          "Primary: Hubtel webhook endpoint",
+          "Secondary: success-page verification using provider status endpoint",
+          "Background: queued verification jobs + scheduled sweeps for stale pending payments",
+        ],
+        snippets: [
+          {
+            language: "mermaid",
+            label: "Web voting flow",
+            code: `sequenceDiagram
+    participant U as Voter (Web)
+    participant FE as Vue + Inertia
+    participant BE as Laravel Controllers/Services
+    participant HP as Hubtel Checkout
+    participant WH as Hubtel Webhook
+    participant JOB as Verification Jobs
+    participant DB as Database
+
+    U->>FE: Select nominee/category + quantity
+    FE->>BE: Submit vote checkout request
+    BE->>DB: Create pending payment
+    BE->>HP: Initialize checkout
+    HP-->>U: Checkout URL / redirect
+    U->>HP: Complete payment
+    HP->>WH: Payment callback
+    WH->>BE: Process webhook payload
+    BE->>DB: Mark payment successful
+    BE->>DB: Create votes + increment nominee totals
+    Note over JOB,BE: Fallback verification runs if webhook delayed/missed`,
+          },
+        ],
+      },
+      {
+        title: "USSD voting state machine",
+        description:
+          "USSD requests are processed through a cache-backed state machine keyed by session ID.",
+        points: [
+          "Cache key per session (ussd_state_<sessionId>) with TTL",
+          "Deterministic level-by-level prompts and transitions",
+          "Charges initiated via provider service once user confirms",
+        ],
+        snippets: [
+          {
+            language: "mermaid",
+            label: "USSD flow",
+            code: `sequenceDiagram
+    participant T as Telco/USSD Gateway
+    participant UC as UssdController
+    participant C as Cache
+    participant HS as HubtelService
+    participant DB as Database
+
+    T->>UC: /api/ussd (new session)
+    UC->>C: Create ussd_state_<sessionID>
+    T->>UC: User code/category/quantity/confirm inputs
+    UC->>C: Update session state per level
+    UC->>DB: Create pending payment
+    UC->>HS: Charge mobile money
+    HS-->>UC: Prompt/PIN/OTP status
+    UC-->>T: Continue/end session response`,
+          },
+        ],
+      },
+      {
+        title: "DevOps: CI/CD and production runtime",
+        description:
+          "I handled the deployment and operational setup so the platform could run reliably in production.",
+        points: [
+          "GitHub Actions CI to run checks and build the web assets",
+          "Repeatable server deployment steps (Nginx + PHP-FPM + queues + scheduler)",
+          "Operational jobs for payment reconciliation and status verification",
         ],
       },
     ],
     challenges: [
       {
-        title: "RDS promotion timing in Step Functions",
+        title: "Idempotency under provider retries",
         description:
-          "RDS replica promotion is asynchronous and takes 5–10 minutes. The initial state machine failed because it proceeded to update the application config before the promoted instance was actually available — causing connection errors.",
+          "Payment providers may retry webhooks and users may refresh/return to success pages, causing duplicate fulfillment risk.",
         solution:
-          "Added an explicit polling loop using a Step Functions Wait state + Lambda that checks the RDS instance status every 30 seconds. The workflow only advances once the promoted instance reaches 'available' state. DR drill timing improved from failing to consistent sub-12-minute end-to-end.",
+          "Implemented idempotency guards around payment fulfillment (status checks and usage checks) so votes/tickets are created exactly once per successful transaction.",
+      },
+      {
+        title: "Tenant boundary enforcement",
+        description:
+          "Multi-tenant systems can accidentally leak data if organization scoping is inconsistent.",
+        solution:
+          "Scoped public routes by organization slug and enforced ownership checks and scoped queries throughout controllers and admin panels.",
       },
     ],
     impact: {
       summary:
-        "A production-grade multi-region DR architecture fully codified in Terraform with automated weekly testing.",
+        "A resilient multi-tenant platform that supports both web and USSD channels with reliable payment fulfillment and admin operational tooling.",
       metrics: [
         {
-          metric: "Recovery Time Objective",
-          before: "Unknown",
-          after: "< 15 min",
-          improvement: "Measurable & tested",
+          metric: "Payment completion paths",
+          before: "Webhook-only",
+          after: "Webhook + verification + reconciliation",
+          improvement: "Higher reliability",
         },
         {
-          metric: "DR Drill Process",
-          before: "Manual / never run",
-          after: "Automated weekly",
-          improvement: "Zero-touch",
+          metric: "Admin operations",
+          before: "Manual",
+          after: "Filament panels + scoped dashboards",
+          improvement: "Faster workflows",
         },
         {
-          metric: "Infrastructure",
-          before: "Manual console",
-          after: "100% Terraform",
-          improvement: "Fully reproducible",
+          metric: "Channel support",
+          before: "Web only",
+          after: "Web + USSD",
+          improvement: "Wider reach",
         },
       ],
       businessOutcome:
-        "A reference architecture demonstrating multi-region DR thinking — a reusable template for any AWS project requiring high availability and tested recovery across regions.",
+        "Organizations can run multiple award and ticketing events in one platform, reconcile payments reliably, and operate events with admin verification tools and notifications.",
     },
     reflections: {
       wouldDoDifferently: [
-        "Use Aurora Global Database instead of RDS read replica — faster promotion time and lower replication lag across regions",
-        "Add cost tagging from day one to get accurate per-component spend tracking across the three regions",
+        "Add structured observability (metrics + alerts) early, especially around webhook latency and reconciliation rates",
+        "Introduce stronger idempotency keys and unique constraints for provider transaction references",
       ],
       keyTakeaways: [
-        "Failover workflows need explicit async wait states — Step Functions polling is the right pattern, not a timer-based sleep",
-        "Weekly automated drills are more valuable than a perfect runbook — the drill finds the gaps the runbook misses, every time",
+        "For payments, design for retries and missed callbacks from day one",
+        "USSD flows require explicit state handling — caching is the simplest reliable foundation",
       ],
     },
   },
 
   /* ─────────────────────────────────────────────────────────
-     4. Cloud Governance Platform
-  ───────────────────────────────────────────────────────── */
+     5. Private Learn — Online Learning Platform
+   ───────────────────────────────────────────────────────── */
   {
-    id: "aws-governance-platform",
-    title: "Cloud Governance Platform",
-    category: "Cloud Engineering",
+    id: "private-learn",
+    title: "Private Learn",
+    category: "Backend Engineering",
     description:
-      "Organization-wide AWS governance across a five-account structure — centralized Config compliance tracking, event-driven auto-remediation, and severity-based routing with a least-privilege cross-account remediation engine.",
-    thumbnail: "/images/works/cropped-Governance-Platform.svg",
+      "Backend for an online learning platform connecting students with tutors — course publishing, discussions, messaging, and certificate-ready learning flows.",
+    thumbnail: "/projects/private_learn/private-learn-screen-1.png",
     summary:
-      "An enterprise-grade AWS governance platform built across a five-account AWS Organization (Management, Governance, Dev, Staging, Prod). Implements Config Rules for compliance evaluation, EventBridge for event routing, and a Lambda-based remediation engine that assumes least-privilege cross-account roles to apply safe fixes — with production explicitly protected by an allowlist.",
-    readTime: "7 min read",
+      "Private Learn is an online learning platform built with Python + Frappe. It helps instructors upload and manage courses, reach learners, and monetize content. The backend supports course/catalog management, interaction (forums + messaging), and extensible flows for certificates and progress tracking.",
+    readTime: "5 min read",
     snapshot: {
-      role: "Cloud Engineer & Solutions Architect",
-      duration: "4 days · 2024",
+      role: "Backend Developer",
+      duration: "Oct 2025",
       stack: [
-        "AWS Organizations",
-        "IAM Identity Center",
-        "AWS Config",
-        "EventBridge",
-        "Lambda",
-        "DynamoDB",
-        "SNS",
-        "CloudWatch",
-        "KMS",
-        "Terraform",
+        "Python",
+        "Frappe Framework",
+        "MariaDB",
+        "Redis",
+        "Nginx",
+        "Linux",
       ],
-      context: "Personal Lab Project",
-      outcome: "5-account org · auto-remediation for LOW severity · 100% IaC",
+      context: "EdTech Platform",
+      outcome:
+        "Course publishing backend · discussion + messaging foundations · scalable content workflows",
     },
     problem: {
       context:
-        "AWS accounts without governance guardrails drift into non-compliance quickly. Public S3 buckets, open security groups, untagged resources, and idle expensive instances are endemic in unmanaged accounts.",
+        "Tutors and instructors need a simple way to publish learning content, engage learners, and earn from their expertise — without wrestling with complex tooling.",
       pain:
-        "Manual compliance checks are reactive and inconsistent. By the time a public S3 bucket is found, data may already be exposed. Security group drift goes unnoticed for months.",
+        "Without solid backend workflows (uploading content, organizing lessons, managing users, and handling interaction), learning platforms become hard to operate and frustrating for creators and learners.",
       stakes:
-        "Compliance failures in cloud environments cause data exposure, unexpected costs, and failed audits. Organizations need automated guardrails that run continuously — not quarterly manual reviews.",
+        "Creators need a reliable platform to manage content and engagement. Learners need a smooth experience that supports interaction and progression.",
     },
     goals: {
       technical: [
-        "Multi-account Config deployment via Terraform across all five accounts",
-        "Compliance rules: required tagging, public S3 detection, open SSH/RDP detection, idle EC2",
-        "Event-driven remediation pipeline with severity-based routing",
-        "Cross-account remediation with least-privilege assume-role pattern",
-        "Production explicitly protected — no auto-remediation without allowlist entry",
-        "Every remediation action logged with resource ARN, action, and outcome",
+        "Backend-first architecture for course publishing and content management",
+        "Structured data model for courses, lessons, enrollments, and progress",
+        "Interaction layer: discussions/forums + direct messaging",
+        "Extensible flows for certificates/badges and professional programs",
+        "Webhook-ready integrations for notifications and external services",
       ],
       constraints: [
-        "Governance account as Config delegated admin via AWS Organizations API",
-        "All IaC — zero manual Config or IAM console steps",
-        "Remediation engine must be fully auditable",
+        "Keep the system easy to manage for non-technical course creators",
+        "Design workflows that can scale as the catalog and userbase grows",
       ],
     },
     architecture: {
-      diagram: "/images/works/cropped-Governance-Platform.svg",
+      diagram: "/projects/private_learn/private-learn-architecture.png",
       overview:
-        "Five-account AWS Organization with a dedicated Governance account as Config delegated admin. Config Aggregator centralizes compliance data from all accounts. EventBridge routes compliance change events to a Policy Engine Lambda that evaluates severity and triggers the appropriate path: auto-remediate (LOW), notify (MEDIUM), or log-only (HIGH).",
+        "A Python + Frappe backend (monolith) with modular DocTypes and server-side logic for courses, learning flows, user interaction, and operational tooling. Redis supports caching/background tasks, with MariaDB as the primary datastore.",
       components: [
-        {
-          name: "AWS Organizations + Config Aggregator",
-          purpose:
-            "Centralizes Config compliance data from all five member accounts into the Governance account",
-        },
-        {
-          name: "AWS Config Rules",
-          purpose:
-            "Evaluates resources continuously against compliance rules — tagging, public S3, open ports, idle EC2",
-        },
-        {
-          name: "EventBridge",
-          purpose:
-            "Routes Config compliance change events to the Policy Engine Lambda for severity evaluation",
-        },
-        {
-          name: "Policy Engine Lambda",
-          purpose:
-            "Evaluates rule severity, routes to remediation, SNS notification, or DynamoDB log-only path",
-        },
-        {
-          name: "Remediation Lambda",
-          purpose:
-            "Assumes CloudGovernanceRemediationRole in target account and applies the safe fix — every action logged",
-        },
-        {
-          name: "DynamoDB",
-          purpose:
-            "Compliance state store — tracks remediation history, current state, and outcome per resource",
-        },
+        { name: "Frappe App", purpose: "Core backend: APIs, workflows, permissions, and admin tooling." },
+        { name: "Course + Catalog Module", purpose: "Courses, lessons, uploads, categories, and publishing workflow." },
+        { name: "Learning + Progress", purpose: "Enrollments, lesson completion, and progress tracking." },
+        { name: "Interaction", purpose: "Forums/discussions, Q&A, and direct messaging." },
+        { name: "Certificates", purpose: "Completion certificates and achievement badges (extensible)." },
+        { name: "MariaDB", purpose: "Primary relational datastore." },
+        { name: "Redis", purpose: "Caching and background task support." },
+        { name: "Nginx", purpose: "Web server/reverse proxy for production." },
       ],
       decisions: [
         {
-          decision: "Severity-based routing instead of auto-remediate everything",
+          decision: "Use Frappe for rapid backend workflows",
           rationale:
-            "Auto-remediating HIGH severity issues (deleting a production security group, closing a port used by a service) is too dangerous. Severity tiers allow safe automation where appropriate and human review where judgment is required.",
+            "Frappe provides fast iteration with strong data modeling (DocTypes), permissions, and admin UX — ideal for content-heavy platforms.",
         },
         {
-          decision: "Cross-account assume-role for remediation",
+          decision: "Design modules around learning domain",
           rationale:
-            "The remediation Lambda runs in the Governance account but assumes a scoped CloudGovernanceRemediationRole in the target account. Least-privilege, auditable in CloudTrail, and revocable per account without touching the remediation engine.",
+            "Separating course/catalog, progress, and interaction keeps the system maintainable as features grow (Udemy-style evolution).",
         },
       ],
     },
     implementation: [
       {
-        title: "Multi-Account Config Deployment",
+        title: "Domain modeling in Frappe",
         description:
-          "AWS Config deployed into every member account via Terraform for-each, with the Governance account registered as delegated admin.",
+          "Built the platform around clear DocTypes and workflows for course publishing and learner progression.",
         points: [
-          "Terraform for-each over account list — one Config recorder + delivery channel per account",
-          "Governance account registered as Config delegated admin via AWS Organizations",
-          "Config Aggregator in Governance account with authorization in each member account",
-          "Dedicated S3 bucket in Governance account for Config snapshots and history",
+          "Course → lessons/modules structure",
+          "Enrollment + progress tracking",
+          "Permissions for creators vs learners",
         ],
       },
       {
-        title: "Policy Engine & Remediation",
+        title: "Interaction features",
         description:
-          "EventBridge rule captures Config compliance change events and routes to the Policy Engine Lambda for severity evaluation and action routing.",
+          "Designed interaction primitives (forums and messaging) to support Q&A and community learning.",
         points: [
-          "Policy Engine maps Config rule name to severity tier (LOW / MEDIUM / HIGH)",
-          "LOW: immediate Remediation Lambda invocation with target account and resource details",
-          "MEDIUM: SNS notification to ops channel with resource details and recommended action",
-          "HIGH: DynamoDB log entry only — human review required",
-          "Production account on an explicit allowlist — LOW items require manual override for prod",
+          "Discussion threads per course/lesson",
+          "Direct messaging between learners and instructors",
+          "Webhook-friendly messaging for notifications",
+        ],
+      },
+      {
+        title: "Backend architecture (Udemy-inspired)",
+        description:
+          "A scalable backend layout that can evolve from a monolith into dedicated services as traffic grows.",
+        points: [
+          "Backend-first separation of concerns by domain modules",
+          "Clear boundaries for notifications, search, and media storage",
+        ],
+        snippets: [
+          {
+            language: "mermaid",
+            label: "High-level backend architecture",
+            code: `flowchart LR
+  U["Learner / Creator"] --> WEB["Web UI"]
+  WEB --> API["Frappe Backend"]
+
+  subgraph Domain["Core Modules"]
+    COURSES["Courses & Catalog"]
+    LEARN["Enrollments & Progress"]
+    INTERACT["Forums & Messaging"]
+    CERTS["Certificates & Badges"]
+  end
+
+  API --> COURSES
+  API --> LEARN
+  API --> INTERACT
+  API --> CERTS
+
+  DB["MariaDB"]
+  CACHE["Redis"]
+
+  COURSES --> DB
+  LEARN --> DB
+  INTERACT --> DB
+  CERTS --> DB
+
+  API --> CACHE`,
+          },
         ],
       },
     ],
     challenges: [
       {
-        title: "Terraform bootstrap ordering for Organizations + delegated admin",
+        title: "Keeping creator workflows simple",
         description:
-          "AWS Organizations APIs have eventual consistency delays. Registering the Governance account as Config delegated admin immediately after creating the org structure failed intermittently with 'account not found' errors.",
+          "Course creators need easy upload/publish flows without complex settings.",
         solution:
-          "Added explicit depends_on relationships in Terraform and a time_sleep resource to allow Organizations propagation before the delegated admin registration. Made all resources idempotent — safe to re-apply after any failure.",
+          "Used Frappe workflows and permissions to guide content publishing with a clean admin experience.",
+      },
+      {
+        title: "Interaction and notifications",
+        description:
+          "Messaging and discussions often require async delivery and integration hooks.",
+        solution:
+          "Designed interaction events to be webhook-ready and compatible with background processing for notifications.",
       },
     ],
     impact: {
       summary:
-        "A production-ready governance framework demonstrating how organizations automate AWS compliance at scale across multiple accounts.",
+        "A backend foundation for a Ghana-focused learning platform that supports course publishing, learner interaction, and extensible credentialing features.",
       metrics: [
         {
-          metric: "Compliance Visibility",
-          before: "Manual quarterly",
-          after: "Continuous real-time",
-          improvement: "Always-on",
+          metric: "Course publishing workflow",
+          before: "Manual sharing",
+          after: "Platform-managed catalog",
+          improvement: "Structured distribution",
         },
         {
-          metric: "LOW severity remediation",
-          before: "Manual ticket, days",
-          after: "Automatic < 5 min",
-          improvement: "Zero-touch",
+          metric: "Learner interaction",
+          before: "Disconnected channels",
+          after: "Forums + messaging primitives",
+          improvement: "Better engagement",
         },
         {
-          metric: "Infrastructure",
-          before: "Manual console",
-          after: "100% Terraform",
-          improvement: "Fully reproducible",
+          metric: "Extensibility",
+          before: "Hard to expand",
+          after: "Modular domains",
+          improvement: "Faster iteration",
         },
       ],
       businessOutcome:
-        "A reference platform for any organization needing automated AWS compliance across multiple accounts — demonstrates the full governance architecture from Config rules through remediation to auditability.",
+        "Tutors can publish and monetize courses more easily, while learners get a consistent experience with interaction and progress tracking.",
     },
     reflections: {
       wouldDoDifferently: [
-        "Use AWS Config Conformance Packs instead of individual rules — better grouping, built-in reporting, and easier to share across accounts",
-        "Add a custom compliance dashboard UI from day one rather than relying on the Config Aggregator's built-in views",
+        "Add search and recommendations earlier (catalogs grow quickly)",
+        "Introduce object storage for media assets from day one",
       ],
       keyTakeaways: [
-        "Severity-based routing is the key architectural decision — it's what makes auto-remediation safe enough to actually run in production accounts",
-        "Cross-account assume-role patterns are the foundation of any multi-account AWS architecture — getting comfortable with them early pays dividends across every subsequent project",
+        "EdTech platforms succeed when creator tooling is frictionless",
+        "Clear domain boundaries make it easier to grow from MVP to a larger platform",
       ],
     },
   },

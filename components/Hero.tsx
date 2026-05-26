@@ -24,7 +24,7 @@ const Hero = () => {
         {/* Greeting Text */}
         <h2 className="text-xl font-normal mb-8 md:mb-10 flex items-center justify-center gap-2">
           <span className="">👋🏾</span>
-          <span>Hi, I&apos;m Ɛvans!</span>
+          <span>Hi, I&apos;m Owura!</span>
         </h2>
 
         {/* Main Heading Container */}
@@ -45,7 +45,7 @@ const Hero = () => {
           {/* Main Heading */}
           <h1 className="text-2xl sm:text-3xl md:text-6xl max-w-[95%] lg:max-w-[80%] mx-auto lg:text-[64px] lg:leading-[150%] font-extrabold text-center leading-tight md:leading-tight ">
             <span className="block">
-              Cloud & Platform Engineer Who Turns Complexity Into Resilient Systems
+              Backend Developer & Software Engineer Building Scalable Systems
             </span>
           </h1>
 
@@ -53,7 +53,7 @@ const Hero = () => {
           <div className="absolute right-10 max-md:scale-75 lg:right-66 max-md:-bottom-40 lg:top-[67%] -translate-y-1/2 translate-x-8 md:translate-x-16 lg:translate-x-24 block lg:scale-115">
             <Image
               src="/images/image-tag2.png"
-              alt="Evans Profile"
+              alt="Owura Profile"
               width={79}
               height={66}
               objectFit="contain"
@@ -63,17 +63,15 @@ const Hero = () => {
 
         {/* Subheading Text */}
         <p className="text-sm md:text-lg lg:text-xl text-center max-w-full max-md:-mt-5  lg:max-w-[40%] leading-[150%] mb-8 md:mb-10 lg:mb-12 text-gray-600">
-          I build production-grade infrastructure — orchestrating containers,
-          automating deployments, and architecting cloud platforms that{" "}
-          <span className="font-semibold">scale</span> and{" "}
-          <span className="font-semibold">endure.</span>
+          I build scalable backends, optimize databases, and deliver reliable
+          REST APIs for web and mobile products.
         </p>
 
         {/* CTA Button */}
         <button
           onClick={() => {
             window.open(
-              "https://mail.google.com/mail/?view=cm&fs=1&to=evansosei0707@gmail.com",
+              "https://mail.google.com/mail/?view=cm&fs=1&to=owurakwaku758@gmail.com",
               "Compose Email",
               "width=800,height=600,resizable=yes,scrollbars=yes,status=yes"
             );

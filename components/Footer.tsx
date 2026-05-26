@@ -19,21 +19,21 @@ const socialLinks: SocialLink[] = [
   {
     id: 1,
     name: "LinkedIn",
-    href: "https://www.linkedin.com/in/evans-osei-5375a426b/",
+    href: "https://www.linkedin.com/in/owura-kwaku-safo-8277b7336/",
     icon: FaLinkedinIn,
     external: true,
   },
   {
     id: 2,
     name: "GitHub",
-    href: "https://github.com/evansosei0707",
+    href: "https://github.com/Owuraku22",
     icon: FaGithub,
     external: true,
   },
   {
     id: 3,
     name: "Email",
-    href: "mailto:evansosei0707@gmail.com",
+    href: "mailto:owurakwaku758@gmail.com",
     icon: HiOutlineMail,
     external: false,
   },
@@ -51,13 +51,13 @@ const Footer = () => {
             <div className="mb-8 md:mb-0">
               <div className="flex items-center gap-3">
                 <Image
-                  src="/images/evans_logo.png"
-                  alt="logo"
+                  src="/images/owura_logo.png"
+                  alt="Owura logo"
                   width={50}
                   height={50}
                 />
                 <span className="text-gray-25 text-2xl hidden md:block font-semibold font-shantell">
-                  Ɛvans Osei
+                  Owura Kwaku Safo
                 </span>
               </div>
             </div>
@@ -81,7 +81,7 @@ const Footer = () => {
             {/* Resume Button - Desktop Only */}
             <div className="hidden md:block">
               <Link
-                href="https://docs.google.com/document/d/1YJOAEK3MSCs9tlnThm2Hf3f3LrUw3BYVJK_9IoI9lNo/edit?tab=t.0"
+                href="/resume/Owura%20kwaku%20cv.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 text-white border border-white rounded-full px-6 py-2.5 bg-[#2E2E2E] hover:bg-white hover:text-black transition-all duration-300 group"
@@ -91,7 +91,7 @@ const Footer = () => {
               </Link>
             </div>
             <Link
-              href="https://docs.google.com/document/d/1YJOAEK3MSCs9tlnThm2Hf3f3LrUw3BYVJK_9IoI9lNo/edit?tab=t.0"
+              href="/resume/Owura%20kwaku%20cv.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className=" flex md:hidden items-center text-sm text-gray-25 border w-11 h-9 cursor-pointer rounded-full px-3 md:px-6 py-3 border-gray-25  font-medium  gap-4"

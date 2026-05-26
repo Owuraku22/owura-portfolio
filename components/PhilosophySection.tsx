@@ -132,44 +132,44 @@ const AnimatedArchitectIcon = ({ isHovered }: { isHovered: boolean }) => (
 
 const rolesData: RoleCard[] = [
   {
-    title: "DevOps Engineer",
-    subtitle: "Ship fast. Ship safe.",
+    title: "Backend Developer",
+    subtitle: "Build it right. Build it to last.",
     description:
-      "I build CI/CD pipelines that go from commit to production in minutes — GitHub Actions, container registries, GitOps-style deploy flows, and zero-downtime rollouts.",
+      "I design backend systems with clean architecture — services, data models, validation, and security-first defaults that keep products stable as they grow.",
     color: "#ff8800",
     accentColor: "#ffe9d0",
     icon: null,
-    tags: ["CI/CD", "GitHub Actions", "Docker", "GitOps"],
+    tags: ["Laravel", "Frappe", "PHP", "Python"],
   },
   {
-    title: "Cloud Engineer",
-    subtitle: "Multi-account. Multi-region.",
+    title: "API Engineer",
+    subtitle: "Fast, consistent integrations.",
     description:
-      "I design and operate AWS architectures — ECS clusters, RDS, Lambda event pipelines, VPC networking, IAM least-privilege, and Terraform-provisioned everything.",
+      "I build REST APIs for web and mobile — authentication, pagination, error handling, and clear contracts that make frontend work predictable.",
     color: "#ff8800",
     accentColor: "#ffe9d0",
     icon: null,
-    tags: ["AWS", "Terraform", "IaC", "Multi-region"],
+    tags: ["REST", "JWT/Sanctum", "Postman", "Docs"],
   },
   {
-    title: "Platform Engineer",
-    subtitle: "The foundation teams build on.",
+    title: "Database & Performance",
+    subtitle: "Make it scale smoothly.",
     description:
-      "I run production orchestration platforms — Nomad + Consul clusters spanning bare-metal and cloud, Vault-backed secrets, Traefik ingress, and Cloudflare Zero Trust.",
+      "I optimize queries and data access patterns, tune indexes, and ship performance improvements that reduce response times and improve reliability.",
     color: "#ff8800",
     accentColor: "#ffe9d0",
     icon: null,
-    tags: ["Nomad", "Consul", "Vault", "Observability"],
+    tags: ["MySQL", "PostgreSQL", "Redis", "Optimization"],
   },
   {
-    title: "Solutions Architect",
-    subtitle: "Design first. Build right.",
+    title: "System Design",
+    subtitle: "Flows, safety, and clarity.",
     description:
-      "I translate business requirements into technical blueprints — multi-region DR platforms, governance automation, event-driven pipelines, and cost-conscious cloud design.",
+      "I translate product requirements into robust flows — payments, roles/permissions, and workflows with auditability, edge-case handling, and clear ownership rules.",
     color: "#ff8800",
     accentColor: "#ffe9d0",
     icon: null,
-    tags: ["Architecture", "DR", "Governance", "Cost Optimization"],
+    tags: ["RBAC", "Payments", "Workflows", "Testing"],
   },
 ];
 
@@ -247,7 +247,7 @@ const PhilosophySection = () => {
               My Engineering Disciplines
             </h2>
             <p className="text-lg md:text-xl text-gray-600 font-normal mx-auto">
-              Four roles. One engineer. End-to-end ownership of the stack.
+              Four disciplines. One focus: building reliable backend systems.
             </p>
           </div>
         </ScrollReveal>

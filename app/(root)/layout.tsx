@@ -104,8 +104,8 @@ const shantellSans = Shantell_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Evans Osei Frimpong",
-  description: "Evans Osei Frimpong - Portolio",
+  title: "Owura Kwaku Safo",
+  description: "Owura Kwaku Safo - Portfolio",
   icons: {
     icon: "/favicon.ico",
     other: {

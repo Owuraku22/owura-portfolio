@@ -24,7 +24,7 @@ function extractThumbnail(content: string): string {
 export async function GET() {
   try {
     const res = await fetch(
-      "https://medium.com/feed/@evansosei0707",
+      "https://medium.com/feed/@owurakwaku758",
       { next: { revalidate: 3600 } }
     );
 

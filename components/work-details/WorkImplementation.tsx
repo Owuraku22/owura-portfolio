@@ -1,5 +1,6 @@
 import React from "react";
 import { FiCode, FiTerminal } from "react-icons/fi";
+import MermaidDiagram from "@/components/MermaidDiagram";
 
 interface CodeSnippet {
   language: string;
@@ -50,19 +51,40 @@ const WorkImplementation = ({ layers }: { layers: ImplementationLayer[] }) => {
               {/* Code snippets */}
               {layer.snippets && layer.snippets.length > 0 && (
                 <div className="space-y-4 pl-9">
-                  {layer.snippets.map((snippet, k) => (
-                    <div key={k} className="rounded-2xl overflow-hidden border border-gray-800">
-                      {/* snippet header */}
-                      <div className="flex items-center gap-2 bg-gray-900 px-4 py-2.5 border-b border-gray-700">
-                        <FiTerminal className="text-gray-400 text-sm" />
-                        <span className="text-xs font-mono text-gray-400">{snippet.label}</span>
-                        <span className="ml-auto text-xs font-mono text-gray-600 uppercase">{snippet.language}</span>
+                  {layer.snippets.map((snippet, k) => {
+                    const isMermaid = snippet.language.toLowerCase() === "mermaid";
+
+                    return (
+                      <div key={k} className="rounded-2xl overflow-hidden border border-gray-800">
+                        {/* snippet header */}
+                        <div className="flex items-center gap-2 bg-gray-900 px-4 py-2.5 border-b border-gray-700">
+                          <FiTerminal className="text-gray-400 text-sm" />
+                          <span className="text-xs font-mono text-gray-400">{snippet.label}</span>
+                          <span className="ml-auto text-xs font-mono text-gray-600 uppercase">
+                            {snippet.language}
+                          </span>
+                        </div>
+
+                        {isMermaid ? (
+                          <div className="bg-white">
+                            <MermaidDiagram code={snippet.code} className="p-4" />
+                            <details className="px-4 pb-4">
+                              <summary className="cursor-pointer text-xs font-mono text-gray-600 select-none">
+                                View diagram source
+                              </summary>
+                              <pre className="mt-3 rounded-xl overflow-x-auto bg-gray-950 text-gray-100 p-4 text-xs md:text-sm font-mono leading-relaxed">
+                                <code>{snippet.code}</code>
+                              </pre>
+                            </details>
+                          </div>
+                        ) : (
+                          <pre className="bg-gray-950 text-gray-100 overflow-x-auto p-4 text-xs md:text-sm font-mono leading-relaxed">
+                            <code>{snippet.code}</code>
+                          </pre>
+                        )}
                       </div>
-                      <pre className="bg-gray-950 text-gray-100 overflow-x-auto p-4 text-xs md:text-sm font-mono leading-relaxed">
-                        <code>{snippet.code}</code>
-                      </pre>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

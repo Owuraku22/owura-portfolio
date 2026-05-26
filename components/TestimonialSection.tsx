@@ -20,36 +20,36 @@ const TESTIMONIALS: Testimonial[] = [
     name: "James Mensah",
     profession: "Software Engineer",
     imageUrl: "/images/users/james mensah.png",
-    title: "Transformed our deployment pipeline overnight",
+    title: "API performance that finally feels fast",
     description:
-      "Evans came in and completely overhauled the way we ship code. Build times went from hours to minutes and the entire team stopped dreading deployments. His Terraform modules are so clean that even our devs who had never touched infrastructure could follow them.",
+      "Owura rebuilt our API layer and query strategy, cutting response times by around 40% and stabilizing our mobile app. The codebase became easier to reason about and deploy.",
   },
   {
     _id: "2",
     name: "Malvin Taylor",
     profession: "Backend Developer",
     imageUrl: "/images/users/Malvin Taylor.png",
-    title: "Zero secrets in our repos — finally",
+    title: "Reliable backend foundations from day one",
     description:
-      "Before Evans joined we had credentials scattered across .env files and GitHub. He set up Vault, rewrote all our deployments to pull secrets at runtime, and walked the whole team through it patiently. Sleeping better now knowing nothing sensitive is sitting in plain text anywhere.",
+      "He designed clean data models and REST endpoints in Laravel that scaled without drama. We shipped faster because the backend just worked.",
   },
   {
     _id: "3",
     name: "Jochebed Appiah",
     profession: "Product Manager",
     imageUrl: "/images/users/Jochebed Appiah.png",
-    title: "Production stability we never had before",
+    title: "Security and validation we could trust",
     description:
-      "Evans built observability into everything — dashboards, alerts, structured logs. For the first time we actually knew what was happening in production before users complained. He also set up automated daily backups that saved us when a database went sideways. Absolute lifesaver.",
+      "Owura set up robust validation and role-based access, so sensitive data stayed protected. We spent less time firefighting and more time building features.",
   },
   {
     _id: "4",
     name: "Kwame Asante",
-    profession: "CTO, Vacancies In Ghana",
+    profession: "CTO, Ghana School of Law",
     imageUrl: "/images/users/about_photo_2.png",
-    title: "The kind of engineer you want owning your infrastructure",
+    title: "Ownership across critical systems",
     description:
-      "Evans operates at a level well beyond his years. He designed and deployed our entire cloud architecture on AWS — networking, ECS, RDS, the works — using Terraform from day one. Disciplined, thorough, and never cuts corners on security. I'd work with him again without hesitation.",
+      "At Ghana School of Law, Owura delivered the Records and Learning Management systems with clear workflows and strong reliability. He communicates well and follows through.",
   },
 ];
 

@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { FaPause, FaPlay } from "react-icons/fa";
 import { FaBackwardStep, FaForwardStep } from "react-icons/fa6";
@@ -44,77 +44,68 @@ const PROFILE_IMAGES: string[] = [
 ];
 
 const BIO_PARAGRAPHS = [
-  "I came into infrastructure through the frontend. Two years of web apps, then a pivot I didn't see coming — the systems underneath the apps became more interesting than the apps themselves.",
-
-  "Today I'm the sole engineer at Ghana School of Law, owning everything end-to-end: orchestration, CI/CD, secrets, networking, backups, and observability across fourteen production services. No team. Working at that scope alone hardens your defaults fast. Terraform for everything. Secrets in Vault. Zero open ports. Not ideology — just the conclusions that keep showing up.",
+  "I'm a backend developer and software engineer with 3+ years of experience building scalable web applications and APIs. I work primarily with Laravel, Frappe, and Python, with a focus on clean architecture, performance, and security.",
+  "At Ghana School of Law, I build systems that digitize records and streamline learning workflows, including role-based access and robust data models. I enjoy collaborating in agile teams and shipping reliable backend features that help products grow.",
 ];
 
-const LOCATION = "Accra, Ghana";
+const LOCATION = "Ghana";
 
 const IS_AVAILABLE = true;
 
 const LIBRARY: Book[] = [
   {
-    title: "Cloud Computing with AWS",
-    author: "Pravin Mishra",
-    textColor: "#000000",
-    bgColor: "#4d97b4",
-    thumbnailUrl: "/images/Books/cloud-computing.jpg",
-  },
-  {
-    title: "Ultimate AWS Certified Cloud Practitioner - 2025",
-    author: "Stephane Maarek",
+    title: "Designing Data-Intensive Applications",
+    author: "Martin Kleppmann",
     textColor: "#ffffff",
-    bgColor: "#1a1a1a",
-    thumbnailUrl: "/images/Books/cloud-practitioner.jpg",
+    bgColor: "#111827",
+    thumbnailUrl: "/images/Books/ddia.svg",
   },
   {
-    title: "Ultimate AWS Certified Developer Associate 2026",
-    author: "Stephane Maarek",
-    textColor: "#1a1a1a",
-    bgColor: "#f5c842",
-    thumbnailUrl: "/images/Books/aws-saa.jpg",
-  },
-  {
-    title: "Ultimate AWS Certified Solutions Architect Professional - 2025",
-    author: "Stephane Maarek",
+    title: "Clean Architecture",
+    author: "Robert C. Martin",
     textColor: "#ffffff",
-    bgColor: "#2d2d2d",
-    thumbnailUrl: "/images/Books/aws-sap.jpg",
+    bgColor: "#0c4b33",
+    thumbnailUrl: "/images/Books/clean-architecture.svg",
+  },
+  {
+    title: "System Design Interview",
+    author: "Alex Xu",
+    textColor: "#ffffff",
+    bgColor: "#1f2937",
+    thumbnailUrl: "/images/Books/system-design-interview.svg",
+  },
+  {
+    title: "Database Internals",
+    author: "Alex Petrov",
+    textColor: "#ffffff",
+    bgColor: "#1d4ed8",
+    thumbnailUrl: "/images/Books/database-internals.svg",
   },
 ];
 
 const EXPERIENCE: Experience[] = [
   {
     company: "Ghana School of Law",
-    role: "DevOps Engineer (Sole Engineer)",
-    startDate: "2025-01-01",
+    role: "Backend Developer",
+    startDate: "2025-11-01",
     isCurrentJob: true,
-    jobType: "Contract",
+    jobType: "Full-time",
   },
   {
-    company: "Vacancies In Ghana Ltd",
-    role: "Full-Stack Developer",
-    startDate: "2023-01-01",
-    endDate: "2025-01-01",
+    company: "Vacancies In Ghana",
+    role: "Backend Developer",
+    startDate: "2025-09-01",
+    endDate: "2025-12-01",
     isCurrentJob: false,
     jobType: "Full-time",
   },
   {
     company: "Shaq Express",
-    role: "Frontend Developer",
-    startDate: "2024-06-01",
-    endDate: "2024-10-31",
+    role: "Backend Developer",
+    startDate: "2024-10-01",
+    endDate: "2025-09-01",
     isCurrentJob: false,
-    jobType: "Contract",
-  },
-  {
-    company: "Olives Technologies",
-    role: "Frontend Developer",
-    startDate: "2023-06-01",
-    endDate: "2023-10-31",
-    isCurrentJob: false,
-    jobType: "Internship",
+    jobType: "Full-time",
   },
 ];
 
@@ -133,7 +124,7 @@ const getStackStyle = (pos: number): ProfileStackStyle => {
 };
 
 const calculateYearsOfExperience = (): number => {
-  const startYear = 2023;
+  const startYear = 2024;
   const currentYear = new Date().getFullYear();
   return currentYear - startYear;
 };
@@ -154,6 +145,7 @@ const AboutMeSection: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
+
   const profileImages = PROFILE_IMAGES;
   const yearsOfExperience = calculateYearsOfExperience();
 
@@ -165,32 +157,17 @@ const AboutMeSection: React.FC = () => {
       (prev) => (prev - 1 + profileImages.length) % profileImages.length,
     );
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.play();
-      } else {
-        audioRef.current.pause();
-      }
-    }
-  }, [isPlaying]);
+  const toggleFavouriteSong = () => setIsPlaying((prev) => !prev);
 
   return (
     <div className="max-w-[1280px] justify-center">
-      <audio
-        ref={audioRef}
-        src="/audio/Phil_Collins_-_Against_All_Odds_live_(mp3.pm).mp3"
-        loop
-      />
       {/* -------------------- ABOUT SECTION -------------------- */}
       <section className="max-w-full w-full mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-0 md:gap-auto">
           {/* LEFT — BIO */}
           <div className="bg-gray-100 border border-gray-300 rounded-3xl p-6">
             <h1 className="text-xl lg:text-4xl text-gray-900 font-bold mb-4 font-shantell">
-              I&apos;m Evans Osei Frimpong,
+              I&apos;m Owura Kwaku Safo,
             </h1>
 
             <div className="space-y-4 mb-8 md:mb-12">
@@ -251,7 +228,7 @@ const AboutMeSection: React.FC = () => {
       <MediaSection
         library={LIBRARY}
         isPlaying={isPlaying}
-        togglePlay={() => setIsPlaying(!isPlaying)}
+        togglePlay={toggleFavouriteSong}
       />
 
       {/* ------------------------ EXPERIENCE ------------------------ */}
@@ -267,7 +244,7 @@ const AboutMeSection: React.FC = () => {
       </section>
 
       {/* ---------------------- CERTIFICATIONS ---------------------- */}
-      <CertificationsSection />
+      {/* <CertificationsSection /> */}
 
       <h2 className="text-[32px] md:text-[96px] font-semibold text-gray-300 mb-4 text-center mt-8 lg:mb-8 font-shantell">
         Thanks for Reading
@@ -669,11 +646,22 @@ const SongCardContent: React.FC<{
         className="relative h-[130px] w-[130px] mb-4 shadow-orange-800 rounded-2xl overflow-hidden"
         style={{ boxShadow: "16px 16px 40px rgba(110, 72, 41, 0.65)" }}
       >
-        <img
-          src="/images/against_all_odds_cover.jpg"
-          alt="Song Thumbnail"
-          className="w-full h-full object-cover"
-        />
+        {isPlaying && isDark ? (
+          <video
+            src="/videos/can_you_feel_it.mp4"
+            className="w-full h-full object-cover"
+            autoPlay
+            loop
+            playsInline
+            controls
+          />
+        ) : (
+          <img
+            src="/images/can_you_feel_it.jpg"
+            alt="Can You Feel It cover"
+            className="w-full h-full object-cover"
+          />
+        )}
       </div>
 
       {/* Song Info */}
@@ -683,14 +671,14 @@ const SongCardContent: React.FC<{
             isDark ? "text-white" : "text-gray-700"
           }`}
         >
-          Against all odds
+          Can You Feel It
         </h4>
         <p
           className={`font-medium text-sm ${
             isDark ? "text-gray-400" : "text-gray-500"
           }`}
         >
-          Phil Collins - Against all odds
+          The Jacksons
         </p>
       </div>
 
@@ -808,14 +796,14 @@ const TweetCardContent: React.FC<{
                 isDark ? "text-white" : "text-gray-700"
               }`}
             >
-              Evans Osei
+              Owura Kwaku Safo
             </p>
             <p
               className={`font-medium text-xs ${
                 isDark ? "text-gray-400" : "text-gray-500"
               }`}
             >
-              @Digital Nomad
+              @Backend Developer
             </p>
           </div>
         </div>
@@ -827,20 +815,18 @@ const TweetCardContent: React.FC<{
             }`}
           >
             <span>
-              How many cloud engineers does it take to change a lightbulb?
+              Good APIs feel invisible — stable, fast, and easy to integrate.
             </span>
             <br />
             <br />
             <span>
-              ‘None. They just declare the darkness a &quot;managed
-              service&quot; and charge you by the hour for it😂
+              Build the boring parts well, and everything else ships faster.
             </span>
-            ’
           </p>
         </div>
       </div>
       <a
-        href="https://www.linkedin.com/in/evans-osei-5375a426b/"
+        href="https://www.linkedin.com/in/owura-kwaku-safo-8277b7336/"
         target="_blank"
         rel="noopener noreferrer"
         onMouseEnter={onHoverStart}

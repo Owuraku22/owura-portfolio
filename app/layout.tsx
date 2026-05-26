@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Evans Osei Frimpong",
-  description: "Evans Osei Frimpong - Portfolio",
+  title: "Owura Kwaku Safo",
+  description: "Owura Kwaku Safo - Portfolio",
+  icons: {
+    icon: "/icon.png",
+    apple: "/apple-icon.png",
+  },
   other: {
     "facebook-domain-verification": "4td6ur9xweirwwc2kyr1q7k13uzycz",
   },
