@@ -1,16 +1,10 @@
-'use client'
-
-/**
- * This route is responsible for the built-in authoring environment using Sanity Studio.
- * All routes under your studio path is handled by this file using Next.js's Catch-all Routes.
- *
- * You can learn more about the next-sanity package here:
- * https://github.com/sanity-io/next-sanity
- */
-
-import { NextStudio } from 'next-sanity/studio'
-import config from '../../../sanity.config'
-
 export default function StudioPage() {
-    return <NextStudio config={config} />
+  return (
+    <main className="max-w-3xl mx-auto px-6 py-16">
+      <h1 className="text-2xl font-semibold">Studio disabled</h1>
+      <p className="mt-3 text-gray-600">
+        This portfolio build doesn’t include the Sanity Studio bundle.
+      </p>
+    </main>
+  );
 }

@@ -29,6 +29,12 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "app/(root)/layout.tss"  ],
-  "exclude": ["node_modules"]
+  ],
+  "exclude": [
+    "node_modules",
+    "sanity/**",
+    "sanity.cli.ts",
+    "sanity.config.ts",
+    "sanity.types.ts"
+  ]
 }
